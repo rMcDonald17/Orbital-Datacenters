@@ -1,7 +1,7 @@
 # Eclipse Geometry vs Altitude for Dawn–Dusk Sun-Synchronous Orbits
 
 **Status:** Phase 1 supporting analysis
-**Figure:** [`figures/beta_eclipse_sweep.png`](figures/beta_eclipse_sweep.png)
+**Figure:** [`figures/beta_eclipse_sweep.png`](../figures/beta_eclipse_sweep.png)
 **Code:** `plots.plot_beta_sweep()`
 
 ---
@@ -194,7 +194,7 @@ The vertical axis is fraction of *each revolution*, not of the day. Multiplying 
 orbital period gives the durations in the table above, and by the revolutions per day
 gives the annual counts.
 
-[![beta_eclipse_sweep](figures/beta_eclipse_sweep.png)](figures/beta_eclipse_sweep.png)
+[![beta_eclipse_sweep](../figures/beta_eclipse_sweep.png)](../figures/beta_eclipse_sweep.png)
 
 ---
 
@@ -233,7 +233,7 @@ The model is therefore validated for the sun-synchronous cases to ~0.01°, which
 the regime the eclipse conclusions concern. Its known limitation for non-sun-
 synchronous orbits is quantified rather than assumed.
 
-![Model validation](figures/beta_model_validation.png)
+![Model validation](../figures/beta_model_validation.png)
 
 ---
 
