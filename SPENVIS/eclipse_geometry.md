@@ -194,6 +194,8 @@ The vertical axis is fraction of *each revolution*, not of the day. Multiplying 
 orbital period gives the durations in the table above, and by the revolutions per day
 gives the annual counts.
 
+[![beta_eclipse_sweep](figures/beta_eclipse_sweep.png)](figures/beta_eclipse_sweep.png)
+
 ---
 
 ## 7. Validation
