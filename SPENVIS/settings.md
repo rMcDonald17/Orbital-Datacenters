@@ -87,6 +87,6 @@ Cases B: [500, 700, 1000, 1200, 1500, 2000] km
 
 Workflow
 
-![[figures/workflow.png]]
+![Workflow](figures/workflow.png)
 
 12. run using ESP-PSYCHIC at A1, A6, B1, B6
