@@ -23,7 +23,7 @@ climbing.
 
 ---
 
-## 2. The orbit
+## 2. The orbit (Analytic Model)
 
 ### 2.1 Sun-synchronicity
 
@@ -198,21 +198,42 @@ gives the annual counts.
 
 ---
 
-## 7. Validation
+## 7. Validation against SPENVIS
 
-The model is independent of the SPENVIS orbit propagator, so the two can be checked
-against each other. The `spenvis_att.txt` output carries the Sun direction in the orbit
-frame; its second component is constant to 2 × 10⁻⁴ across all 1,441 trajectory points,
+The analytic model shares no code or data with the SPENVIS orbit generator, so the
+two constitute an independent check. Two quantities are compared across all twelve
+orbit cases.
+
+**Inclination.** For heliosynchronous cases SPENVIS derives inclination from altitude
+and LTAN internally. Agreement with the J2 model of Section 2.2 is within
+**−0.002° to +0.003°** at every altitude, confirming the inclination–altitude
+relationship on which Section 5 depends.
+
+**Beta angle.** The `spenvis_att.txt` output carries the Sun direction in the orbit
+frame; its second component is constant to 2 × 10⁻⁴ over 1,441 trajectory points,
 identifying it as the orbit-normal projection, i.e. sin β.
 
-| Source | β at 500 km, 1 Jan 2026 |
+| Case set | β residual (model − SPENVIS) |
 |---|---|
-| SPENVIS attitude output (`SatSun_Y`) | 59.59° |
-| Analytic model, this note | 59.58° |
+| A (SSO, LTAN 6h) | +0.010° to +0.014° |
+| B (30°, RAAN 0) | −0.411° to −0.200° |
 
-Agreement to 0.01°. Independently, the SPENVIS orbit generator reports RAAN = 190.28°
-for that epoch, consistent with LTAN 6h given a solar right ascension near 281.3°,
-confirming the dawn–dusk configuration was correctly specified.
+The order-of-magnitude difference is expected and diagnostic. The model assumes
+Ω − α_sun is constant, which is exactly the sun-synchronous condition — nodal
+regression cancelling the Sun's apparent motion. For the A-cases the assumption
+holds by construction and residuals reflect only the ~0.2° solar ephemeris series.
+
+For the B-cases it does not hold. At 30° inclination the node regresses 6.6°/day at
+500 km, falling to 3.3°/day at 2,000 km, which SPENVIS propagates but the model
+neglects. A first-order estimate using the mean nodal shift over the one-day arc
+predicts −0.30° to −0.15°; observed residuals are −0.41° to −0.20°, matching in sign,
+magnitude, and altitude trend — both fall by a factor of 2.0 across the range.
+
+The model is therefore validated for the sun-synchronous cases to ~0.01°, which is
+the regime the eclipse conclusions concern. Its known limitation for non-sun-
+synchronous orbits is quantified rather than assumed.
+
+![Model validation](/figures/beta_model_validation.png)
 
 ---
 
