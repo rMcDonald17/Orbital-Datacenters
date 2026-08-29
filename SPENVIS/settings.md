@@ -37,7 +37,7 @@ Radiation sources and effects
 			Threshold flux for exposure (/cm^2/s): 10
 
 	Solar Particle Mission Fluences
-		Solar particle Model: [ESP-PSYCHIC (total fluence), (worst case), SAPPHIRE (total fluence), (worst case)]
+		Solar particle Model: [SAPPHIRE (total fluence), (worst case), (ESP-PSYCHIC (total fluence), (worst case) at A1,A6,B1,B6 only)]
 		Ion range: H to H
 		Confidence level: 95 %
 		Magnetic Shielding: on
@@ -57,8 +57,8 @@ Radiation sources and effects
 		Galactic Cosmic Ray Fluxes
 			Ion range: H to U
 			GCR model at 1 AU: ISO 15390
-				[ISO-15390 standard model, +2 sigma (at 500km only)]
-			Solar activity data: [Solar Minimum (May 1996), mission epoch(at 500)]
+				[ISO-15390 standard model, (+2 sigma (at 500km only))]
+			Solar activity data: [Solar Minimum (May 1996), (mission epoch(at 500km only))]
 			Magnetic Shielding: Same as above
 
 		Ionizing dose for simple geometries (SHIELDOSE)
@@ -71,7 +71,7 @@ Radiation sources and effects
 			Shielding Depths: Default
 			Damage factor [g/MeV]: 1.0E-11
 
-		MC-SCREAM
+		MC-SCREAM 
 			Cell type: Spectrolab UTJ
 			Cover glass thickness: 100 um
 		
