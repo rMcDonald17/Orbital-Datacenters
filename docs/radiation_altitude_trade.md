@@ -194,7 +194,7 @@ is solar-cycle invariant.
 
 ### 5.2 Solar protons are almost altitude-independent
 
-At 5 mm, SSO, solar-minimum:
+At 5 mm Al, SSO, solar-minimum trapped models — annual dose in rad(Si)/yr:
 
 | | 500 km | 2,000 km | growth |
 |---|---:|---:|---:|
