@@ -1,7 +1,7 @@
 # Eclipse Geometry vs Altitude
 
 **Status:** Phase 1 supporting analysis
-**Figure:** [`figures/beta_eclipse_sweep.png`](../figures/beta_eclipse_sweep.png)
+**Figure:** [`figures/beta_eclipse_sweep_sso.png`](../figures/beta_eclipse_sweep_sso.png), [`figures/beta_eclipse_sweep_lowinc.png`](../figures/beta_eclipse_sweep_lowinc.png)
 **Code:** [`plots.py`](../SPENVIS/SPENPY/plots.py)
 
 ---
@@ -309,7 +309,8 @@ The vertical axis in both right-hand panels is fraction of *each revolution*, no
 day. Multiplying by the orbital period gives the durations in the table above, and by
 the revolutions per day gives the annual counts.
 
-[![beta_eclipse_sweep](../figures/beta_eclipse_sweep.png)](../figures/beta_eclipse_sweep.png)
+[![beta_eclipse_sweep](../figures/beta_eclipse_sweep_sso.png)](../figures/beta_eclipse_sweep_sso.png)
+[![beta_eclipse_sweep](../figures/beta_eclipse_sweep_lowinc.png)](../figures/beta_eclipse_sweep_lowinc.png)
 
 ---
 
