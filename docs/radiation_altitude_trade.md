@@ -30,8 +30,8 @@ inclinations. A-cases are dawn–dusk sun-synchronous (LTAN 6h); B-cases are cir
 | Component | Model |
 |---|---|
 | Trapped protons | AP-8, MIN and MAX |
-| Trapped electrons | AE-8, MIN and MAX, 50% confidence |
-| Solar protons | SAPPHIRE total fluence, 95% confidence; ESP-PSYCHIC cross-check at four corners |
+| Trapped electrons | AE-8, MIN and MAX |
+| Solar protons | SAPPHIRE total fluence, 95% confidence |
 | Magnetospheric shielding | Størmer, eccentric dipole, stormy, CREME96 moment, all arrival directions |
 | Dose | SHIELDOSE-2, centre of aluminium sphere, silicon target |
 
@@ -42,8 +42,7 @@ be validated against it.
 
 Three SHIELDOSE runs per case: AP-8/AE-8 MIN with annual solar fluence, MAX with annual
 solar fluence, and MAX with a worst-event solar fluence. **The third has no meaningful
-total** — it sums a 365-day trapped dose with a single-event solar dose — and its Total
-column is dropped in the data pipeline rather than left for the reader to catch.
+total** — it sums a 365-day trapped dose with a single-event solar dose.
 
 ---
 
