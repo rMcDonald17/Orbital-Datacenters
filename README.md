@@ -16,7 +16,7 @@ inclinations, all circular.
 | Ground coverage | global, polar | ±30° latitude — the populated, high-demand band |
 | Sees the poles | yes, every orbit | never |
 | South Atlantic Anomaly | clips the edge on some orbits | crosses it on most orbits |
-| Solar particle events | fully exposed over the poles | **completely immune** |
+| Solar particle events | fully exposed over the poles | **sheltered** |
 | Eclipse | none above ~1,400 km | eclipses year-round — no eclipse-free season |
 
 The two differ in almost every way that matters for radiation, and not in the direction
