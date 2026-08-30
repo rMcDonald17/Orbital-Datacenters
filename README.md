@@ -17,7 +17,7 @@ inclinations, all circular.
 | Sees the poles | yes, every orbit | never |
 | South Atlantic Anomaly | clips the edge on some orbits | crosses it on most orbits |
 | Solar particle events | fully exposed over the poles | **completely immune** |
-| Eclipse | none above ~1,400 km | not analysed in Phase 1 |
+| Eclipse | none above ~1,400 km | eclipses year-round — no eclipse-free season |
 
 The two differ in almost every way that matters for radiation, and not in the direction
 intuition suggests. **A-cases take more solar proton dose; B-cases take more trapped
@@ -55,6 +55,14 @@ Eclipse is a **winter phenomenon**, concentrated around the December solstice �
 shell is fully sunlit from roughly day 45 to day 300. A 500 km shell therefore needs
 storage sized for a 22.7-minute worst-case pass, but exercises it ~1,520 times a year
 rather than every revolution.
+
+**The 30° shells are not analysed here.** Their RAAN is not frozen — it regresses
+6.6°/day at 500 km, cycling the orbit plane through the full range of sun angles every
+~47 days rather than following the seasons. Because β never reaches the eclipse-free
+threshold at 30° inclination, those shells eclipse on essentially every revolution
+year-round, and their sunlit fraction is a time-average over the nodal cycle rather than
+a seasonal curve. That calculation is deferred; the >99%-sunlit premise in the filing
+applies to the sun-synchronous shells regardless.
 
 The model is validated against the SPENVIS orbit generator across all twelve cases:
 inclination agrees to within 0.003°, and β to 0.014° for the sun-synchronous cases.
