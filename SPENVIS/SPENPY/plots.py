@@ -128,6 +128,45 @@ def plot_tid_vs_altitude(dose, depths=DEPTHS_MM, stem="tid_vs_altitude"):
     return _save(fig, stem)
 
 
+def plot_ddd_vs_altitude(long, depths=(2.0, 5.0, 10.0), stem="ddd_vs_altitude"):
+    """Displacement damage dose vs altitude. AP-8 MIN only; protons only."""
+    d = long[(long.quantity == "niel_dose_MeV_per_g")
+             & (long.depth_mm.isin(depths))]
+    if d.empty:
+        raise SystemExit("no NIEL rows matched")
+
+    fig, axes = plt.subplots(1, len(depths), figsize=(13, 4.6),
+                             sharey=True, constrained_layout=True)
+    for ax, depth in zip(np.atleast_1d(axes), depths):
+        sub = d[d.depth_mm == depth]
+        for s, (label, colour) in SET_STYLE.items():
+            for series, ls, lw in (("Total", "-", 2.0),
+                                   ("Trapped Protons", "--", 1.3),
+                                   ("Solar Protons", ":", 1.3)):
+                w = (sub[(sub.set == s) & (sub.series == series)]
+                     .sort_values("alt_km"))
+                if w.empty or not (w.value > 0).any():
+                    continue
+                ax.plot(w.alt_km, w.value.where(w.value > 0), ls, color=colour,
+                        lw=lw, marker="o" if series == "Total" else None, ms=4,
+                        label=f"{label}, {series.lower()}")
+        pos = sub.value[sub.value > 0]
+        if len(pos):
+            ax.set_ylim(pos.min() / 3, pos.max() * 3)
+        ax.set_yscale("log")
+        ax.set_title(f"{depth:g} mm Al", fontsize=11)
+        ax.set_xlabel("Altitude (km)")
+        ax.grid(True, which="major", alpha=0.30)
+        ax.yaxis.set_minor_locator(LogLocator(base=10, subs="auto", numticks=20))
+        ax.yaxis.set_minor_formatter(NullFormatter())
+        ax.grid(True, which="minor", alpha=0.12)
+
+    np.atleast_1d(axes)[0].set_ylabel("DDD (MeV g$^{-1}$ yr$^{-1}$)")
+    np.atleast_1d(axes)[0].legend(fontsize=7, framealpha=0.9)
+    fig.suptitle("Displacement damage dose vs altitude "
+                 "(NIEL, AP-8 MIN, protons only, centre of Al sphere)", fontsize=12)
+    return _save(fig, stem)
+
 # --------------------------------------------- fig 2: dose decomposition
 
 def _crossover(x, a, b):
@@ -259,48 +298,121 @@ def eclipse_fraction(alt_km, beta_deg):
     arg = np.sqrt(h ** 2 + 2 * R_EARTH * h) / ((R_EARTH + h) * np.cos(b))
     return np.where(arg >= 1.0, 0.0, np.arccos(np.clip(arg, -1, 1)) / np.pi)
 
+def solar_ra_dec(doy, year=2026):
+    """Apparent solar RA and declination, low-precision series (~0.2 deg)."""
+    n = _days_from_j2000(doy, year)
+    L = np.radians((280.460 + 0.9856474 * n) % 360)
+    g = np.radians((357.528 + 0.9856003 * n) % 360)
+    lam = L + np.radians(1.915) * np.sin(g) + np.radians(0.020) * np.sin(2 * g)
+    eps = np.radians(23.439 - 3.56e-7 * n)
+    return (np.degrees(np.arctan2(np.cos(eps) * np.sin(lam), np.cos(lam))) % 360,
+            np.degrees(np.arcsin(np.sin(eps) * np.sin(lam))))
 
-def plot_beta_sweep(alts=ALTS_KM, ltan_hr=6.0, year=2026, stem="beta_eclipse_sweep"):
-    doy = np.arange(1, 366)
-    dec = solar_declination(doy, year)
+
+def nodal_rate(alt_km, inc_deg):
+    """Secular J2 nodal regression, deg/day. Negative for prograde orbits."""
+    a = R_EARTH + np.asarray(alt_km, float)
+    n = np.sqrt(MU_EARTH / a ** 3)
+    return np.degrees(-1.5 * J2 * (R_EARTH / a) ** 2 * n
+                      * np.cos(np.radians(inc_deg))) * 86400
+
+
+def _beta_general(inc_deg, raan_deg, ra_deg, dec_deg):
+    """Beta from the full expression, for orbits with no frozen sun angle."""
+    dR = np.radians(raan_deg - ra_deg)
+    i, d = np.radians(inc_deg), np.radians(dec_deg)
+    return np.degrees(np.arcsin(np.cos(d) * np.sin(i) * np.sin(dR)
+                                + np.sin(d) * np.cos(i)))
+
+def _beta_family(fam, alts, t, ra, dec, ltan_hr, inc_b, raan_b, axb, axe):
+    """Draw one orbit family onto a (beta, eclipse-fraction) axis pair."""
     cmap = plt.cm.viridis(np.linspace(0.05, 0.9, len(alts)))
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.8), constrained_layout=True)
-    rows = []
-
+    rows, free = [], []
     for alt, c in zip(alts, cmap):
-        inc = sso_inclination(alt)
-        beta = np.abs(beta_angle(inc, dec, ltan_hr))
-        bc = beta_critical(alt)
+        if fam == "A":
+            inc = float(sso_inclination(alt))
+            beta = np.abs(beta_angle(inc, dec, ltan_hr))
+            lab = f"{alt} km (i={inc:.1f}\u00b0)"
+        else:
+            inc = inc_b
+            raan = (raan_b + nodal_rate(alt, inc) * (t - 1)) % 360
+            beta = np.abs(_beta_general(inc, raan, ra, dec))
+            lab = f"{alt} km"
+        bc = float(beta_critical(alt))
         frac = eclipse_fraction(alt, beta)
+        lw = 1.6 if fam == "A" else 0.9
 
-        ax1.plot(doy, beta, color=c, lw=1.8, label=f"{alt} km (i={inc:.1f}\u00b0)")
-        ax1.axhline(bc, color=c, lw=1.0, ls="--", alpha=0.8)
-        ax2.plot(doy, 100 * frac, color=c, lw=1.8, label=f"{alt} km")
+        axb.plot(t, beta, color=c, lw=lw, label=lab)
+        axb.axhline(bc, color=c, lw=1.0, ls="--", alpha=0.8)
+        # a flat zero line carries no information and drags the y-limits
+        if frac.max() > 0:
+            axe.plot(t, 100 * frac, color=c, lw=lw, label=f"{alt} km")
+        else:
+            free.append(alt)
 
-        rows.append(dict(alt_km=alt, inc_deg=round(inc, 2),
+        T = 2 * np.pi * np.sqrt((R_EARTH + alt) ** 3 / MU_EARTH) / 60
+        rows.append(dict(family=fam, alt_km=alt, inc_deg=round(inc, 2),
                          beta_min=round(beta.min(), 2),
+                         beta_max=round(beta.max(), 2),
                          beta_crit=round(bc, 2),
-                         eclipse_days=int((frac > 0).sum()),
+                         eclipse_free_days=round(float((frac == 0).sum()
+                                                       * (t[1] - t[0])), 1),
                          max_eclipse_pct=round(100 * frac.max(), 2),
+                         max_eclipse_min=round(frac.max() * T, 1),
+                         period_min=round(T, 1),
                          annual_sunlit_pct=round(100 * (1 - frac.mean()), 2)))
 
-    ax1.set_xlabel("Day of year"); ax1.set_ylabel("|beta| (deg)")
-    ax1.set_title("Sun/orbit-plane angle vs eclipse-free threshold", fontsize=11)
-    ax1.annotate("dashed = threshold for that altitude", xy=(0.02, 0.03),
+    if free:
+        axe.annotate("eclipse-free all year:\n" + ", ".join(f"{a} km" for a in free),
+                     xy=(0.5, 0.55), xycoords="axes fraction",
+                     ha="center", fontsize=10, color="0.35")
+    axb.set_title("Sun/orbit-plane angle vs eclipse-free threshold", fontsize=11)
+    axe.set_title("Eclipse fraction per orbit", fontsize=11)
+    axb.set_ylabel("|beta| (deg)")
+    axe.set_ylabel("Orbit in eclipse (%)")
+    axb.annotate("dashed = threshold for that altitude", xy=(0.02, 0.03),
                  xycoords="axes fraction", fontsize=8, color="0.4")
-    ax1.legend(fontsize=7.5, ncol=1, framealpha=0.9, loc="upper right")
-    ax1.grid(alpha=0.3)
+    for a_ in (axb, axe):
+        a_.set_xlabel("Day of year")
+        a_.grid(alpha=0.3)
+        a_.legend(fontsize=7.5, ncol=1, framealpha=0.9)
+    return pd.DataFrame(rows)
 
-    ax2.set_xlabel("Day of year"); ax2.set_ylabel("Orbit in eclipse (%)")
-    ax2.set_title("Eclipse fraction per orbit", fontsize=11)
-    ax2.legend(fontsize=7.5, ncol=2, framealpha=0.9)
-    ax2.grid(alpha=0.3)
 
-    fig.suptitle(f"Dawn-dusk SSO (LTAN {ltan_hr:g}h), {year}: eclipse geometry vs altitude",
+def plot_beta_sweep_sso(alts=ALTS_KM, ltan_hr=6.0, year=2026, step=0.25,
+                        stem="beta_eclipse_sweep_sso"):
+    """Dawn-dusk sun-synchronous: beta follows the season."""
+    t = np.arange(0, 365, step) + 1
+    ra, dec = solar_ra_dec(t, year)
+    fig, (axb, axe) = plt.subplots(1, 2, figsize=(13, 4.8), constrained_layout=True)
+    df = _beta_family("A", alts, t, ra, dec, ltan_hr, None, None, axb, axe)
+    fig.suptitle(f"Eclipse geometry vs altitude, {year}: "
+                 f"dawn-dusk SSO (LTAN {ltan_hr:g}h)", fontsize=12)
+    _save(fig, stem)
+    return df
+
+
+def plot_beta_sweep_low_inc(alts=ALTS_KM, inc_b=30.0, raan_b=0.0, year=2026,
+                            step=0.25, stem="beta_eclipse_sweep_lowinc"):
+    """General low-inclination orbit: beta follows the nodal cycle."""
+    t = np.arange(0, 365, step) + 1
+    ra, dec = solar_ra_dec(t, year)
+    fig, (axb, axe) = plt.subplots(1, 2, figsize=(13, 4.8), constrained_layout=True)
+    df = _beta_family("B", alts, t, ra, dec, None, inc_b, raan_b, axb, axe)
+    fig.suptitle(f"Eclipse geometry vs altitude, {year}: "
+                 f"{inc_b:g}\u00b0 inclination, RAAN {raan_b:g}\u00b0 at epoch",
                  fontsize=12)
     _save(fig, stem)
-    return pd.DataFrame(rows)
+    return df
+
+
+def plot_beta_sweep(**kw):
+    """Both families. Returns the combined summary table."""
+    sso = {k: v for k, v in kw.items() if k in ("alts", "ltan_hr", "year", "step")}
+    low = {k: v for k, v in kw.items()
+           if k in ("alts", "inc_b", "raan_b", "year", "step")}
+    return pd.concat([plot_beta_sweep_sso(**sso), plot_beta_sweep_low_inc(**low)],
+                     ignore_index=True)
 
 def solar_ra_dec(doy, year=2026):
     """Apparent solar RA and declination, low-precision series (~0.2 deg)."""
