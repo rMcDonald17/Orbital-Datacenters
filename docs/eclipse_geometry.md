@@ -24,8 +24,8 @@ Two results:
   The reason is not simply "higher is better": sun-synchronicity ties inclination to
   altitude, and the inclination penalty cancels roughly 40% of the geometric benefit
   of climbing.
-- For **30° orbits** the premise fails at every altitude in the filed range. Those
-  shells are 64–76% sunlit and eclipse on essentially every revolution, year-round.
+- The **30° orbits** do not meet this premise at every altitude in the filed range. Those
+  shells are 64–76% sunlit and eclipse on essentially every revolution, year-round. Note that these orbits are given for the higher demand / lower latency compute nodes. 
 
 ---
 
