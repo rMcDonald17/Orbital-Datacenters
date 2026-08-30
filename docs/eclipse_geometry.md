@@ -2,7 +2,7 @@
 
 **Status:** Phase 1 supporting analysis
 **Figure:** [`figures/beta_eclipse_sweep.png`](../figures/beta_eclipse_sweep.png)
-**Code:** `plots.plot_beta_sweep()`
+**Code:** [`plots.py`](../SPENVIS/SPENPY/plots.py)
 
 ---
 
