@@ -152,6 +152,28 @@ The filed 2,000 km ceiling buys 0.6 percentage points of additional sunlight for
 the annual dose relative to 1,500 km. The 30° shells are excluded on power grounds
 independent of radiation.
 
+## What's next
+
+**IRENE/AE9-AP9.** AP-8 and AE-8 are legacy models — epoch-limited, built largely from
+1960s–70s data, and known to be conservative for electrons. More importantly they
+represent the solar cycle with two static maps, so the MIN/MAX pair in the results above
+is a spread between two model snapshots rather than a confidence interval. AE9/AP9 is a
+statistical model with genuine percentile bands, and it is Distribution A, so its spectra
+can be published directly where SPENVIS output cannot. Re-running the twelve cases
+through IRENE closes both gaps at once: it quantifies how much conservatism AP-8/AE-8
+carry, and it produces an environment database this repo can actually ship.
+
+**Geant4 transport.** Every dose here is computed at the centre of a solid aluminium
+sphere — a screening geometry, not a spacecraft. The next step is rebuilding the slab
+problem in Geant4 against the same source spectra, verifying against SHIELDOSE-2, then
+moving to a representative flat-panel bus with electronics behind realistic mass
+distribution.
+
+**Single-event effects.** Total dose says nothing about upset rates, which for a compute
+payload may bind well before TID does. >30 MeV integral proton flux is already tabulated
+as the precursor metric; turning it into an upset rate needs a device cross-section
+survey.
+
 ## Acknowledgements
 
 Radiation environment data generated using SPENVIS (www.spenvis.oma.be), an ESA operational software system maintained by the Royal Belgian Institute for Space Aeronomy (BIRA-IASB).
