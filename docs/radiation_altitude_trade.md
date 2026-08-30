@@ -187,7 +187,10 @@ The SSO total is higher at 500 km *solely* because of a solar proton contributio
 
 A secondary observation: 30°-case electron dose is nearly identical between AE-8 MIN and
 MAX (51.9 vs 51.8 rad/yr at 500 km, 2 mm), while the SSO cases differ by roughly 2×.
-AE-8's solar-cycle dependence lives in the outer belt, which only the polar orbit samples.
+AE-8's solar-cycle dependence lives in the outer belt, which only the polar orbit
+samples. This is a property of how AE-8 was built — its MIN and MAX maps are nearly
+identical in the inner zone — rather than evidence that the real inner-belt environment
+is solar-cycle invariant.
 
 ### 5.2 Solar protons are almost altitude-independent
 
