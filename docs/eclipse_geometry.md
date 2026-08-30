@@ -36,7 +36,7 @@ where `a` is semi-major axis, `n = sqrt(mu/a^3)` the mean motion, and `i` the
 inclination. Choosing `i` such that this rate equals the mean rate of the Sun's
 apparent motion along the ecliptic — 360° per 365.2422 days, or 1.99106 × 10⁻⁷ rad/s —
 makes the orbit plane rotate with the Earth's motion about the Sun. The local solar time
-at the ascending node (LTAN) is then approximately constant year-round. Physical constants: mu = 398600.4418 km^3/s^2, R_earth = 6378.137 km, J2 = 1.08262668e-3.
+at the ascending node (LTAN) is then approximately constant year-round. Physical constants: mu = 398600.4418 $km^3/s^2$, $R_{earth}$ = 6378.137 km, J2 = 1.08262668e-3.
 
 Because `cos i` must be negative, every SSO is **retrograde**: `i > 90°`.
 
