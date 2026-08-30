@@ -39,26 +39,6 @@ else:
     print(f"reusing {main} ({len(long):,} rows)"
           + ("   [STALE: SPENVIS files are newer]" if stale else ""))
 
-# %% ---- figures
-from plots import (load_long, dose_table, plot_tid_vs_altitude,
-                   plot_dose_decomposition, plot_beta_sweep)
-
-dose = dose_table(load_long(find_table()))
-plot_tid_vs_altitude(dose)
-# for cyc in ("min", "max"):
-#     plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle=cyc)
-print(plot_beta_sweep().to_string(index=False))
-# %%
-from plots import plot_beta_validation
-
-plot_beta_validation(ROOT)
-
-# %%
-
-from plots import plot_beta_sweep
-summary = plot_beta_sweep(alts=[500, 700, 1000, 1200, 1500, 2000],
-                          ltan_hr=6.0, year=2026)
-print(summary.to_string(index=False))
 # %%
 
 from plots import load_long, dose_table, plot_tid_vs_altitude, plot_dose_decomposition
@@ -70,27 +50,7 @@ plot_tid_vs_altitude(dose)
 plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle="min")
 plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle="max")
 
-# %%
-
-n = long[long.quantity == "niel_dose_MeV_per_g"]
-print(n.groupby(["case", "step_tag"]).size().unstack(fill_value=0).to_string())
-print(sorted(n.series.unique()))
-# %%
-
-from plots import plot_ddd_vs_altitude
-
-plot_ddd_vs_altitude(long)
-
-ddd = long[(long.quantity=="niel_dose_MeV_per_g") & (long.series=="Total")]
-tid = long[(long.quantity=="ionizing_dose") & (long.series=="Total")
-           & (long.step_tag=="SHIELDOSE_MinMin_SP_total")]
-m = ddd.merge(tid, on=["case","set","alt_km","depth_mm"], suffixes=("_ddd","_tid"))
-m["ratio"] = m.value_ddd / m.value_tid
-print(m[m.depth_mm.isin([2.,5.,10.])]
-      .pivot_table(index=["set","alt_km"], columns="depth_mm", values="ratio")
-      .to_string())
-
-# %%
+#  %%
 
 from plots import plot_beta_sweep, plot_beta_validation
 
