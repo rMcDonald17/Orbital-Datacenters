@@ -209,8 +209,8 @@ cutoff at high latitude is already low and weakens only slightly with altitude. 
 **The 30° shells receive exactly zero solar proton dose at every altitude.** At 30°
 inclination the orbit never reaches invariant latitudes where cutoff rigidity falls low
 enough for solar protons to arrive. This is a genuine trade: the low-inclination shells
-buy immunity to solar particle events at the cost of continuous SAA exposure. Any
-requirement for the compute payload to power-safe during an SPE applies to the
+buy immunity to solar particle events at the cost of continuous South Atlantic Anomaly (SAA) exposure. Any
+requirement for the compute payload to power-safe during a Solar Particle Event (SPE) applies to the
 sun-synchronous shells only.
 
 ### 5.3 Shielding effectiveness falls with altitude
@@ -229,6 +229,17 @@ The 30° trend rises from a very low base because those shells are proton-domina
 
 The engineering consequence: **shield mass is a poor lever at high altitude.** Going from
 5 mm to 10 mm at 2,000 km SSO reduces annual dose by only 36%.
+
+> \* All doses in this note are computed at the **centre of a solid aluminium sphere**
+> (SHIELDOSE-2, silicon target). A 4π sphere is a screening geometry, not a spacecraft:
+> real hardware sits behind a highly anisotropic mass distribution, with some directions
+> shielded by the bus and others nearly open. The sphere is conservative for a
+> well-buried component and optimistic for one near an exposed panel. Absolute doses
+> should therefore be read as scaling results rather than predictions, though the
+> *relative* comparisons across altitude and inclination — which are what this trade
+> depends on — are far less sensitive to geometry than the absolute values. A
+> representative flat-panel bus model with a Geant4 transport cross-check is Phase 2
+> work (Section 8).
 
 ---
 
