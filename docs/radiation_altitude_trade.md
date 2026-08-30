@@ -327,10 +327,17 @@ costs 2.75× the annual dose at 5 mm, and shield mass is a weak lever there — 
 above it they are roughly twice as dirty, and they are the more TID-constrained of the
 two across most of the range.
 
-Read together with the [eclipse geometry note](eclipse_geometry.md), which finds the
->99%-sunlit premise fails below ~1,200 km, the two constraints bound the useful band
-from opposite directions and leave roughly **1,200–1,500 km** as the region satisfying
-both — narrower than the filed 500–2,000 km range.
+Read together with the [eclipse geometry note](docs/eclipse_geometry.md), which finds
+that the >99%-sunlit premise fails below ~1,200 km **for dawn–dusk sun-synchronous
+orbits**, the two constraints bound the useful band from opposite directions and leave
+roughly **1,200–1,500 km** as the region satisfying both — narrower than the filed
+500–2,000 km range. This applies to the SSO shells only; the 30° shells are not
+eclipse-constrained in the same way, since their sunlit fraction is set by RAAN drift
+rather than a frozen beta angle, and they were not analysed for eclipse in Phase 1.
+
+Note also that the eclipse conclusion is specific to LTAN 6h. A different local time of
+ascending node shifts the beta angle and moves the threshold; the dawn–dusk choice is
+what makes the >99% claim achievable at any altitude in the filed range.
 
 ---
 
