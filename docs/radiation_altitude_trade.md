@@ -13,7 +13,7 @@ The reference scenario proposes compute shells anywhere from 500 to 2,000 km, at
 sun-synchronous and ~30° inclinations, on a replacement cadence of roughly five years.
 
 This note answers: **what does each altitude in that range cost in total ionising dose,
-and does any part of it make COTS accelerator hardware untenable within the replacement
+and does any part of it make commerical off the shelf (COTS) accelerator hardware untenable within the replacement
 interval?**
 
 The short answer is that the top of the filed range does, and that the inclination
@@ -50,18 +50,84 @@ total** — it sums a 365-day trapped dose with a single-event solar dose.
 
 ![Dose decomposition](../figures/dose_decomposition_solarmin.png)
 
-At 500 km SSO behind increasing aluminium, four contributions behave very differently:
+Four cases at the corners of the matrix — 500 and 2,000 km, at both inclinations — show
+how the species mix shifts with altitude and inclination. All four use AP-8/AE-8 solar
+minimum with annual SAPPHIRE fluence.
 
-- **Trapped electrons** dominate thin shielding and fall off a cliff. AE-8 electrons top
-  out near 7 MeV, so beyond ~8 mm Al they are fully stopped and contribute nothing.
-- **Trapped protons** decline gently. The AP-8 spectrum extends to 400 MeV and the high-
-  energy tail is essentially unshieldable at practical mass.
-- **Solar protons** track the trapped protons in shape but sit above them at A1.
-- **Bremsstrahlung** stays between 0.2% and 1.0% of total dose at A1, rising with depth as primary electrons are stopped. Since graded-Z shielding works specifically by suppressing bremsstrahlung, its ceiling in this environment is on the order of 1% — and at equal areal density high-Z materials are worse than aluminium for both electrons and protons, because collisional mass stopping power scales with Z/A. The productive direction for the proton-dominated high-altitude cases is lower-Z and hydrogen-rich, not higher-Z.
+**Trapped electrons** (red) dominate thin shielding in every case and then fall off a
+cliff. AE-8 electrons top out near 7 MeV, so past roughly 8 mm Al they are fully stopped
+and contribute nothing — visible as the near-vertical drop at the right of each panel.
+The magnitude varies enormously: at 2 mm the electron dose runs from 51.8 rad/yr at B1
+to 81,471 rad/yr at B6, a factor of 1,573.
 
-**The electron and trapped-proton curves cross at 4.5 mm Al.** Below that depth the
-shield is working against electrons; above it, against protons. That single number
-explains most of the structure in the following sections.
+**Trapped protons** (blue) decline gently and set the floor at depth. The AP-8 spectrum
+extends to 400 MeV and its high-energy tail is essentially unshieldable at practical
+mass. B1 is the clearest illustration: its proton curve is nearly flat across the whole
+range, falling only from 0.37 to about 0.13 krad(Si)/yr over 400× in shield thickness.
+Adding aluminium to a proton-dominated orbit buys very little.
+
+**Solar protons** (green dashed) behave completely differently between the two
+inclinations, and this is the most visible contrast in the figure.
+
+At A1 the solar curve sits *above* the trapped proton curve across most depths — solar
+protons are the largest single contributor to A1's dose at 5 mm. At A6 the same curve
+has dropped to the bottom of the panel, running alongside bremsstrahlung. Nothing
+happened to the solar environment: its dose grows only 1.23× across the filed range
+(Section 5.2), while trapped protons grow 193×. The solar contribution is simply
+overwhelmed.
+
+**In both B panels the solar proton curve is absent entirely.** At 30° inclination the
+orbit reaches invariant latitudes of roughly 41°, giving a Størmer cutoff rigidity of
+order 2–3 GV. SAPPHIRE models solar protons only to 1 GeV, so the entire spectrum sits
+below cutoff and the magnetospheric attenuation factor is identically zero at every
+energy — confirmed directly in the SAPPHIRE output. The 30° shells are effectively
+immune to solar particle events. That this is rigidity discrimination rather than a
+model failure is confirmed by Galactic Cosmic Ray (GCR), which extends to TeV energies and *is* transmitted
+to the B-cases at 21–43% of the SSO flux.
+
+**Bremsstrahlung** (olive) never exceeds 1.01% of total dose anywhere in the matrix. Its
+share peaks at intermediate depth — where primary electrons have been stopped but the
+proton continuum has not yet taken over — then declines. It is most prominent in B6,
+where the electron flux that generates it is largest, and nearly invisible in B1, which
+has almost no electrons to convert.
+
+### The electron/proton crossover moves
+
+The depth at which trapped protons overtake electrons is annotated on each panel:
+
+| Case | Altitude | Inclination | Crossover |
+|---|---:|---|---:|
+| A1 | 500 km | SSO | 4.5 mm |
+| A6 | 2,000 km | SSO | 2.1 mm |
+| B1 | 500 km | 30° | 0.9 mm |
+| B6 | 2,000 km | 30° | 1.9 mm |
+
+It is not a fixed property of the environment, and it does not move in the same
+direction for both inclinations.
+
+For the **SSO shells the crossover moves shallower** with altitude, 4.5 → 2.1 mm,
+because trapped protons grow faster than electrons (268× vs 43× at 2 mm). A polar orbit
+already samples the outer electron belt at 500 km, so its electron dose has less room to
+grow, while its proton dose climbs steeply into the inner belt.
+
+For the **30° shells it moves deeper**, 0.9 → 1.9 mm, because the ordering reverses:
+electrons grow 1,573× against 390× for protons. A 30° orbit at 500 km barely reaches the
+electron belts at all, so its electron dose starts from a very low base and rises
+sharply as the orbit climbs toward the slot region.
+
+The consequence for shielding: **below the crossover the shield is working against
+electrons, above it against protons**, and the transition sits at a different depth for
+every orbit. B1 is proton-limited from under a millimetre of aluminium onward; A1 is
+electron-limited out to 4.5 mm. A single shield thickness applied across the
+constellation would be solving different problems in different shells.
+
+Since every case is proton-dominated beyond a few millimetres, the productive direction
+is **lower** Z, not higher: hydrogen-rich materials such as polyethylene (Z/A ≈ 0.57)
+offer roughly 20% better proton mass stopping power than aluminium and moderate
+secondary neutrons efficiently. A polyethylene-loaded structural panel is the variant
+worth evaluating in Phase 2, not graded-Z.
+
+Note that SHIELDOSE-2 is a pre-computed aluminium-only model
 
 ---
 
@@ -84,7 +150,7 @@ also shifts with altitude, on altitude as well:
 | 10 mm | MIN | MIN | MIN | MIN | MIN | MIN |
 
 **The MIN/MAX pair is an envelope, not a bound.** Neither case is uniformly conservative,
-and labelling either as "worst case" is wrong. In the headline figure the two curves are
+and labelling either as "worst case" is wrong. In the figure below the two curves are
 plotted individually with faint shading between them for this reason.
 
 ---
