@@ -3,7 +3,7 @@
 **Status:** Phase 1 primary result
 **Figures:** [`figures/tid_vs_altitude.png`](../figures/tid_vs_altitude.png) ·
 [`figures/dose_decomposition_solarmin.png`](../figures/dose_decomposition_solarmin.png)
-**Code:** ['plots.py'](../SPENVIS/SPENPY/plots.py)
+**Code:** ['plot_dose_decomposition()'](../SPENVIS/SPENPY/plots.py), ['plot_tid_vs_altitude()'](../SPENVIS/SPENPY/plots.py)
 
 ---
 
