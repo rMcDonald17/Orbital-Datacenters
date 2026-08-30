@@ -124,3 +124,7 @@ sunlit, 3.3–7.8 krad(Si)/yr at 5 mm, comfortably inside a 100 krad five-year b
 
 The filed 2,000 km ceiling buys 0.6 percentage points of additional sunlight for 2.75× the
 annual dose relative to 1,500 km.
+
+## Acknowledgements
+
+Radiation environment data generated using SPENVIS (www.spenvis.oma.be), an ESA operational software system maintained by the Royal Belgian Institute for Space Aeronomy (BIRA-IASB).
