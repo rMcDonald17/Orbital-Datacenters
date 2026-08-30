@@ -274,19 +274,29 @@ Reading the map:
 
 ## 7. Displacement damage
 
-NIEL-weighted displacement damage dose was computed for all twelve cases at
-SHIELDOSE-2's default depth grid, and is available in the environment tables as
-`niel_dose_MeV_per_g` (non-ionising dose), `niel_damage_equiv_fluence` (10 MeV proton
-equivalent), and `niel_relative_damage` (the former scaled by a 1×10⁻¹¹ g/MeV damage
-factor).
+NIEL-weighted displacement damage dose was computed for all twelve cases on
+SHIELDOSE-2's default depth grid and is retained in the environment tables as
+`niel_dose_MeV_per_g`, `niel_damage_equiv_fluence` (10 MeV proton equivalent), and
+`niel_relative_damage` (the first scaled by a 1×10⁻¹¹ g/MeV damage factor).
 
-**Known gap:** NIEL was run at step 7, between the trapped-MIN and trapped-MAX passes,
-so DDD currently carries the AP-8 MIN environment only. Unlike TID, it has no
-solar-cycle band. One MAX-side run exists for the 1,000 km SSO case; the remaining
-eleven are outstanding. Closing the gap requires a solar-fluence pass followed by a NIEL
-pass per case, with no trapped re-run.
+**No DDD result is presented in Phase 1.** Two limitations put a meaningful analysis out
+of reach with the current runs:
 
-DDD feeds solar array end-of-life power, which is Phase 2 scope.
+- *Proton-only.* SPENVIS's standalone NIEL module with a hydrogen damage factor yields
+  trapped and solar proton contributions only. Electrons cause significant displacement
+  damage in solar cells, and array coverglass is thin enough (~100 µm) that the electron
+  environment dominates there — precisely the regime DDD is wanted for.
+- *Solar-minimum only.* NIEL ran at step 7, between the trapped-MIN and trapped-MAX
+  passes, so the results carry the AP-8 MIN environment throughout and have no
+  solar-cycle band.
+
+The altitude and inclination structure duplicates the TID result, since both are driven
+by the same trapped proton environment, so a DDD-versus-altitude figure would add
+nothing over Section 5.
+
+Array end-of-life power is deferred to Phase 2, where MC-SCREAM and EQFLUX — which model
+electron damage and cell-specific degradation directly — are the appropriate tools. The
+NIEL tables are retained as an input to that work.
 
 ---
 
@@ -353,3 +363,5 @@ plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle="min")
 
 Underlying tables: `environment/ionizing_dose.csv`, `environment/niel_*.csv`.
 Per-case SPENVIS settings and run identifiers: `environment/settings/`.
+
+Radiation environment data generated using SPENVIS (www.spenvis.oma.be), an ESA operational software system maintained by the Royal Belgian Institute for Space Aeronomy (BIRA-IASB).
