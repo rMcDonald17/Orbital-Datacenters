@@ -57,9 +57,7 @@ At 500 km SSO behind increasing aluminium, four contributions behave very differ
 - **Trapped protons** decline gently. The AP-8 spectrum extends to 400 MeV and the high-
   energy tail is essentially unshieldable at practical mass.
 - **Solar protons** track the trapped protons in shape but sit above them at A1.
-- **Bremsstrahlung** is three or more decades below everything else at every depth and
-  never matters. This is a useful negative result for graded-Z shielding: the mechanism
-  graded-Z suppresses is not a contributor here.
+- **Bremsstrahlung** stays between 0.2% and 1.0% of total dose at A1, rising with depth as primary electrons are stopped. Since graded-Z shielding works specifically by suppressing bremsstrahlung, its ceiling in this environment is on the order of 1% — and at equal areal density high-Z materials are worse than aluminium for both electrons and protons, because collisional mass stopping power scales with Z/A. The productive direction for the proton-dominated high-altitude cases is lower-Z and hydrogen-rich, not higher-Z.
 
 **The electron and trapped-proton curves cross at 4.5 mm Al.** Below that depth the
 shield is working against electrons; above it, against protons. That single number
