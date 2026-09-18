@@ -4,9 +4,10 @@ Where you can actually put a datacenter in LEO, and what it costs you.
 SpaceX's January 2026 FCC filing proposes an orbital compute constellation spanning
 500–2,000 km, in sun-synchronous shells for continuously-sunlit baseline compute and
 ~30° shells for demand-peak capacity. This is an independent study of what that altitude
-range costs in radiation, and whether the "over 99% sunlit" premise holds — for either
-orbit family, at any altitude in the range. Every input traces to public filings,
-published models, or datasheets.
+range costs in radiation, and whether the "over 99% sunlit" premise holds for the
+baseline shells it was claimed for. The 30° shells are assessed against their own filed
+role — demand-peak capacity — not against a continuity standard the filing never set for
+them. Every input traces to public filings, published models, or datasheets.
 
 Two constraints bound the answer from opposite ends. **Eclipse geometry rules out the
 bottom of the range**: below ~1,200 km even a dawn–dusk sun-synchronous orbit eclipses,
@@ -14,6 +15,11 @@ and the 30° shells eclipse on essentially every revolution at every altitude. *
 scaling makes the top expensive**: annual TID rises 56× across the range for the SSO
 shells and 269× for the 30° shells. What survives both is a narrower band than the one
 filed.
+
+A third constraint is not yet folded in. Heat rejection scales linearly with payload
+power against a fixed ceiling of a few hundred W/m² of blackbody radiating capacity, and
+unlike shield mass it has no weak-lever escape. `thermal/` holds the roadmap for that arm
+of the study.
 
 ## The two orbit families
 
@@ -149,10 +155,28 @@ expensive. Roughly **1,200–1,500 km, sun-synchronous** satisfies both — 99.4
 sunlit, 3.3–7.8 krad(Si)/yr at 5 mm, comfortably inside a 100 krad five-year budget.
 
 The filed 2,000 km ceiling buys 0.6 percentage points of additional sunlight for 2.75×
-the annual dose relative to 1,500 km. The 30° shells are excluded on power grounds
-independent of radiation.
+the annual dose relative to 1,500 km.
+
+The 30° shells are a different question, not a worse answer to the same one. They cover
+the ±30° population band that polar shells reach only briefly, and the filing scopes them
+as demand-peak capacity rather than continuous baseline — an intermittent role that a
+64–76% sunlit duty cycle may suit rather than preclude. What they carry is a storage
+penalty: ~5,000 charge cycles a year against ~1,520 for a 500 km SSO, and a ~35-minute
+worst-case pass that climbing does not shorten. Whether that penalty is affordable is a
+mass question this study has not yet answered.
 
 ## What's next
+
+**Thermal management.** The results here say where a satellite survives and when it has
+power, not whether it can shed the heat its payload makes. Rack power is the open variable
+and it is moving fast: ~40 kW for an H100-class rack, ~120 kW for GB200 NVL72, and
+NVIDIA's public roadmap runs to ~600 kW with Rubin Ultra. Radiator area scales linearly
+with every watt of it against a fixed radiating ceiling, so the thermal answer may bind
+before dose does. `thermal/` lays out the work, taking the 30° shells first — they eclipse
+every revolution, which makes them the harder and more informative thermal case, and they
+are the family whose storage and radiator mass this study has so far only asserted. An
+altitude trade on Earth IR, albedo and direct solar; then a lumped-node model with
+bounding hot and cold cases, radiator and array sizing, across 40–600 kW.
 
 **IRENE/AE9-AP9.** AP-8 and AE-8 are legacy models — epoch-limited, built largely from
 1960s–70s data, and known to be conservative for electrons. More importantly they
