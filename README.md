@@ -18,7 +18,7 @@ filed.
 
 A third constraint is not yet folded in. Heat rejection scales linearly with payload
 power against a fixed ceiling of a few hundred W/m² of blackbody radiating capacity, and
-unlike shield mass it has no weak-lever escape. `thermal/` holds the roadmap for that arm
+unlike shield mass it has no weak-lever escape. `Thermal_Engineering/` holds the roadmap for that arm
 of the study.
 
 ## The two orbit families
