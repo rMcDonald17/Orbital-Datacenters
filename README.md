@@ -172,7 +172,7 @@ power, not whether it can shed the heat its payload makes. Rack power is the ope
 and it is moving fast: ~40 kW for an H100-class rack, ~120 kW for GB200 NVL72, and
 NVIDIA's public roadmap runs to ~600 kW with Rubin Ultra. Radiator area scales linearly
 with every watt of it against a fixed radiating ceiling, so the thermal answer may bind
-before dose does. `thermal/` lays out the work, taking the 30° shells first — they eclipse
+before dose does. `Thermal_Engineering/` lays out the work, taking the 30° shells first — they eclipse
 every revolution, which makes them the harder and more informative thermal case, and they
 are the family whose storage and radiator mass this study has so far only asserted. An
 altitude trade on Earth IR, albedo and direct solar; then a lumped-node model with
