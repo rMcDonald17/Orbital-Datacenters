@@ -156,10 +156,12 @@ Built up in four layers, each validating the next. Terminology follows Thermal D
 Whole-vehicle balance, one equation per surface class:
 
 $$
-\dot{Q}_{\text{payload}} + \dot{Q}_{\text{bus}}
-+ \sum_i \alpha_{s,i} A_i \left( q_{\text{sol}} \cos\theta_i + a\, q_{\text{sol}} F_i K \right)
-+ \sum_i \varepsilon_i A_i q_{\text{IR}} F_i
+\begin{aligned}
+\dot{Q}_{\text{payload}} + \dot{Q}_{\text{bus}} &+
+\sum_i \alpha_{s,i} A_i \left( q_{\text{sol}} \cos\theta_i + a\, q_{\text{sol}} F_i K \right) \\
+&+ \sum_i \varepsilon_i A_i q_{\text{IR}} F_i
 = \sum_i \varepsilon_i A_i \sigma T_i^4
+\end{aligned}
 $$
 
 Solve for radiator area at fixed $T_{\text{rad}}$. This layer alone produces the first radiator-area-vs-power curve and is the cross-check for everything below. Reproduce the Phase 1 scoping results ($40$ kW gives $A_{\text{rad}} \approx 117$ m² at $T_{\text{rad}} = 318$ K, deployed panel, 1,200 km) as the regression test, then re-run at the Part A altitude.
@@ -191,17 +193,21 @@ Thermal-Desktop-style network. Each node has capacitance $C_i = m_i c_{p,i}$; co
 **Governing ODE per node:**
 
 $$
+\begin{aligned}
 C_i \frac{dT_i}{dt} = \dot{Q}_i(t)
-+ \sum_j G_{ij} \left( T_j - T_i \right)
-+ \sum_j R_{ij} \left( T_j^4 - T_i^4 \right)
+&+ \sum_j G_{ij} \left( T_j - T_i \right) \\
+&+ \sum_j R_{ij} \left( T_j^4 - T_i^4 \right)
+\end{aligned}
 $$
 
 where the node source term separates constant internal dissipation from the time-varying environment:
 
 $$
+\begin{aligned}
 \dot{Q}_i(t) = \dot{q}_{\text{int},i}
-+ \alpha_{s,i} A_i \left[ q_{\text{sol}} \cos\theta_i(t) + a\, q_{\text{sol}} F_i(t) K(t) \right]
-+ \varepsilon_i A_i q_{\text{IR}} F_i(t)
+&+ \alpha_{s,i} A_i \left[ q_{\text{sol}} \cos\theta_i(t) + a\, q_{\text{sol}} F_i(t) K(t) \right] \\
+&+ \varepsilon_i A_i q_{\text{IR}} F_i(t)
+\end{aligned}
 $$
 
 with $\cos\theta_i$ clamped at zero and both solar terms vanishing in eclipse. Setting $dT_i/dt = 0$ and summing over $i$ recovers the Layer 1 balance of §5.1.
@@ -306,10 +312,7 @@ Report array area and mass for each; select one for the sweep.
 
 N6 energy balance, absorbed solar minus electrical output, radiating from both faces:
 
-$$
-\left[ \alpha_s - \eta_{\text{cell}}(T) \right] q_{\text{sol}} \cos\theta
-= \left( \varepsilon_f + \varepsilon_b \right) \sigma T^4 + \dot{q}_{\text{cond,bus}}
-$$
+$$\left[ \alpha_s - \eta_{\text{cell}}(T) \right] q_{\text{sol}} \cos\theta = \left( \varepsilon_f + \varepsilon_b \right) \sigma T^4 + \dot{q}_{\text{cond,bus}}$$
 
 Include the cell efficiency temperature coefficient $d\eta_{\text{cell}}/dT$ so array output and temperature are solved together. Cold case: post-eclipse open-circuit voltage at minimum temperature.
 
@@ -335,54 +338,4 @@ Specific power (W/kg) at array level, flexible-blanket vs. rigid, with source. R
 
 ---
 
-## 9. Schedule (target: 5 weeks part-time)
 
-| Week | Work |
-|---|---|
-| 1 | Part A: orbit geometry, view-factor integrator, flux model for all six altitudes; T1 draft; **altitude decision gate** |
-| 2 | Part B case definitions; Layer 1 balance; Layer 2 node network built and validated against Layer 1 at 40 kW |
-| 3 | Layer 3 Fourier sub-models; Layer 4 cross-check; radiator orientation and $T_{\text{rad}}$ trades |
-| 4 | Array sizing and pointing; power sweep 40–600 kW, hot/cold/nominal |
-| 5 | T9 report section; repo cleanup; write-up post |
-
----
-
-## 10. Repo Additions
-
-```
-orbital-dc-radiation/
-├── thermal/
-│   ├── README.md                 # this plan
-│   ├── altitude_trade/           # Part A: flux model, view factors, T1
-│   ├── cases.md                  # Part B: hot/cold/nominal definitions
-│   ├── nodes.md                  # T2: node network and conductor tables
-│   ├── conduction_models.md      # T3: Fourier derivations
-│   ├── model/                    # Layer 1–4 code (Python: numpy/scipy/matplotlib)
-│   └── sweep/                    # T8: power sweep outputs, per-case settings.md
-└── report/
-    └── section_thermal.md        # T9
-```
-
-Every run records its inputs in a `settings.md` beside the outputs, as in Phase 1.
-
----
-
-## 11. Risks and Guardrails
-
-- **Altitude decision before modeling.** Do not build the node model until T1 is reviewed and an altitude is selected. The scoping work in this conversation used 1,200 km by default; that is not the selected altitude.
-- **Worst-instant vs. average.** Sizing to the orbit-average rejection is a common error that under-sizes the radiator; always report worst-instant and state which was used.
-- **View factors.** The $\sin^2\!\rho$ shortcut is only valid for a nadir-facing plate. Any tilted or edge-on surface needs the integrated view factor. Validate the integrator against $\sin^2\!\rho$ at $\theta = 0$ before use.
-- **Cold case honesty.** The bounding cold case is payload-off in eclipse, not payload-on. Do not let the payload's own dissipation mask the survival-heater and battery-temperature problem.
-- **Mass model sourcing.** Radiator $\mu_{\text{rad}}$ (kg/m²) and array specific power (W/kg) dominate the answer. Each carries a cited basis or is labeled an assumption.
-- **Scope.** No CFD, no two-phase loop modeling, no detailed deployment mechanism design, no economics. Park in `phase2_backlog.md`.
-- **Public-data discipline.** As in Phase 1 — every reference number traces to the filing, a datasheet, or a handbook.
-
----
-
-## 12. Open Items for the Author
-
-1. Confirm the meaning and intended scope of "FTE analysis" (§5.4).
-2. Confirm altitude set for Part A: the six Phase 1 B-case altitudes, or add 600 km from the start?
-3. Confirm the cold case definition: payload-off in eclipse (proposed) vs. payload-on at minimum load.
-4. Coolant working fluid: ammonia (proposed) vs. water-glycol vs. two-phase.
-5. Whether the battery mass and array mass models belong in this aside or are deferred to Phase 2 with only the thermal-side sizing kept here.
