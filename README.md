@@ -16,10 +16,12 @@ scaling makes the top expensive**: annual TID rises 56× across the range for th
 shells and 269× for the 30° shells. What survives both is a narrower band than the one
 filed.
 
-A third constraint is not yet folded in. Heat rejection scales linearly with payload
-power against a fixed ceiling of a few hundred W/m² of blackbody radiating capacity, and
-unlike shield mass it has no weak-lever escape. `Thermal_Engineering/` holds the roadmap for that arm
-of the study.
+A third constraint scales differently from either. Heat rejection rises linearly with
+payload power against a fixed ceiling of a few hundred W/m² of blackbody radiating
+capacity, and unlike shield mass it has no weak-lever escape. That work is under way in
+`Thermal_Engineering/`, and its first result was not a thermal one: a compute satellite
+is mostly radiator and solar array, which makes it two to three times draggier per unit
+mass than Starlink, moving the altitude floor for the 30° shells from 500 km to ~800.
 
 ## The two orbit families
 
@@ -147,6 +149,46 @@ way to a proton spectrum that thick aluminium cannot stop.
 Full method, decomposition, and limitations:
 **[docs/radiation_altitude_trade.md](docs/radiation_altitude_trade.md)**
 
+## Drag and disposal
+
+Radiation and eclipse say where a satellite survives and when it has power. Neither says
+whether it stays in orbit.
+
+A 40 kW compute satellite needs roughly 143 m² of radiating surface and 232 m² of solar
+array against about 2.4 t — an area-to-mass ratio near 0.07 m²/kg, against 0.03–0.04
+for
+Starlink V2 Mini and 0.006 for the ISS. **Thermal and power hardware is area, and area is
+drag.**
+
+Passive orbit lifetime for the 30° shells — years to decay to 200 km with no
+station-keeping, at three levels of solar activity:
+
+| Altitude | Solar min (yr) | Solar mean (yr) | Solar max (yr) |
+|---:|---:|---:|---:|
+| 500 km | 1.39 | 0.35 | 0.07 |
+| 600 km | 6.31 | 1.59 | 0.27 |
+| 700 km | >25 | 6.57 | 1.11 |
+| 800 km | >25 | 23.1 | 3.86 |
+| 1,000 km | >25 | >25 | >25 |
+
+**500 km is excluded outright** — the vehicle deorbits in months at mean solar activity
+and in weeks at solar max, and holding it there would cost 774 kg of propellant over five
+years, a third of its dry mass. The five-year passive floor sits at 820 km at solar max.
+
+Above that, FCC 22-74 bounds the other end: LEO spacecraft must be disposed of within five
+years of mission end, with reentry casualty risk below 1 in 10,000. Station-keeping cost
+falls steeply with altitude while disposal cost rises, and the two cross near 800 km at
+about 1.5% of dry mass. The minimum is shallow — everything from 700 to 1,200 km sits
+between 1.5% and 2.5%.
+
+**These are propulsion constraints, not thermal ones**, and they turn out to bound the
+30° band more tightly than either radiation or heat rejection. The thermal environment
+itself varies by only 7.6% across the whole filed range and does not discriminate between
+altitudes at all.
+
+Full method, validation, and limitations:
+**[docs/altitude_selection_30deg.md](docs/altitude_selection_30deg.md)**
+
 ## Where that leaves the trade
 
 The two constraints bound the useful band from opposite directions. Eclipse geometry
@@ -162,8 +204,14 @@ the ±30° population band that polar shells reach only briefly, and the filing 
 as demand-peak capacity rather than continuous baseline — an intermittent role that a
 64–76% sunlit duty cycle may suit rather than preclude. What they carry is a storage
 penalty: ~5,000 charge cycles a year against ~1,520 for a 500 km SSO, and a ~35-minute
-worst-case pass that climbing does not shorten. Whether that penalty is affordable is a
-mass question this study has not yet answered.
+worst-case pass that climbing does not shorten.
+
+That mass question now has a first answer. At 40 kW the storage penalty is ~236 kg of
+cells, about 10% of vehicle mass — real but not disqualifying. What does constrain the
+30° shells is drag: the area their radiators and arrays require rules out the bottom half
+of the filed range, leaving roughly **700–1,000 km** once disposal cost is counted at the
+top. That band is set by propulsion, not by the eclipse penalty the shells were doubted
+for.
 
 ## What's next
 
@@ -172,11 +220,13 @@ power, not whether it can shed the heat its payload makes. Rack power is the ope
 and it is moving fast: ~40 kW for an H100-class rack, ~120 kW for GB200 NVL72, and
 NVIDIA's public roadmap runs to ~600 kW with Rubin Ultra. Radiator area scales linearly
 with every watt of it against a fixed radiating ceiling, so the thermal answer may bind
-before dose does. `Thermal_Engineering/` lays out the work, taking the 30° shells first — they eclipse
-every revolution, which makes them the harder and more informative thermal case, and they
-are the family whose storage and radiator mass this study has so far only asserted. An
-altitude trade on Earth IR, albedo and direct solar; then a lumped-node model with
-bounding hot and cold cases, radiator and array sizing, across 40–600 kW.
+before dose does. `Thermal_Engineering/` takes the 30° shells first — they eclipse every
+revolution, making them the harder and more informative thermal case. The altitude
+trade is done
+(above); what remains is a lumped-node model at 800 km with bounding hot and cold cases,
+Fourier sub-models for the radiator fin and cold plate, and radiator and array sizing
+across 40–600 kW. The open question there is where radiator area stops fitting a Starship
+fairing: at 600 kW the vehicle is ~34 t with a 29 m radiator panel, one rack per launch.
 
 **IRENE/AE9-AP9.** AP-8 and AE-8 are legacy models — epoch-limited, built largely from
 1960s–70s data, and known to be conservative for electrons. More importantly they
@@ -193,11 +243,32 @@ problem in Geant4 against the same source spectra, verifying against SHIELDOSE-2
 moving to a representative flat-panel bus with electronics behind realistic mass
 distribution.
 
+**A dedicated altitude study.** The drag and disposal results above are screening grade —
+an exponential atmosphere with a static solar-activity multiplier, and mass models that
+are still assumptions. A real answer needs NRLMSISE-00 or JB2008 with a phased solar
+cycle, a demise analysis to settle whether controlled reentry is required (it would move
+the selection to the bottom of the band), and the conjunction environment, which this
+study has not considered at all — notably that SpaceX lowered ~4,400 Starlink satellites
+from 550 to 480 km during 2026 to reduce collision risk, while the filed compute
+constellation sits entirely above that band.
+
 **Single-event effects.** Total dose says nothing about upset rates, which for a compute
 payload may bind well before TID does. >30 MeV integral proton flux is already tabulated
 as the precursor metric; turning it into an upset rate needs a device cross-section
 survey.
 
 ## Acknowledgements
+
+**AI tooling.** Parts of this study were developed with Anthropic's Claude — primarily
+Claude Opus 5, with some work on Claude Fable 5. The models were used for derivation
+checking, code structuring and refactoring, literature and regulatory lookup, and
+drafting prose from results. Every physical model, numerical result and conclusion in this
+repository was specified, reviewed and verified by the author; the view-factor integrator
+is validated against a closed form, the eclipse model against the SPENVIS orbit generator,
+and all environmental constants and regulatory citations are traced to the primary sources
+listed inline. Errors are the author's.
+
+<!-- Usage split not tracked per session; if you want a percentage here, log it going
+     forward rather than estimating retrospectively. -->
 
 Radiation environment data generated using SPENVIS (www.spenvis.oma.be), an ESA operational software system maintained by the Royal Belgian Institute for Space Aeronomy (BIRA-IASB).
