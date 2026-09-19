@@ -212,14 +212,15 @@ gradient.
 
 ## 5. Drag: the constraint that actually bounds the bottom
 
-Thermal and power hardware is area, and area is drag. The 40 kW vehicle carries ~247 m²
-of array and ~72 m² of physical radiator panel against ~2,100 kg:
+Thermal and power hardware is area, and area is drag. Sizing the 40 kW vehicle
+self-consistently at 800 km with the zenith radiator of §3 gives 232 m² of array and
+71.5 m² of physical radiator panel against 2,359 kg:
 
 | Attitude | $A$ (m²) | $A/m$ (m²/kg) | $B = m/(C_D A)$ (kg/m²) |
 |---|---:|---:|---:|
-| Broadside (worst) | 330 | 0.157 | 2.9 |
-| Tumble-average | 171 | 0.082 | 5.6 |
-| Edge-on (best) | 60 | 0.029 | 16.0 |
+| Broadside (worst) | 316 | 0.134 | 3.4 |
+| Tumble-average | 164 | 0.070 | 6.5 |
+| Edge-on (best) | 58 | 0.024 | 18.6 |
 
 For reference, Starlink V2 Mini is roughly 0.03–0.04 m²/kg and ISS about 0.006. **This
 vehicle is two to three times draggier than Starlink per unit mass**, and Starlink
@@ -229,26 +230,26 @@ Passive orbit lifetime, tumble-average $A/m$, years to 200 km:
 
 | $h$ (km) | Solar min | Solar mean | Solar max |
 |---:|---:|---:|---:|
-| 500 | 1.19 | 0.30 | 0.05 |
-| 600 | 5.38 | 1.35 | 0.23 |
-| 700 | 22.4 | 5.60 | 0.94 |
-| 800 | >25 | 19.7 | 3.29 |
-| 1,000 | >25 | >25 | 22.1 |
+| 500 | 1.39 | 0.35 | 0.07 |
+| 600 | 6.31 | 1.59 | 0.27 |
+| 700 | >25 | 6.57 | 1.11 |
+| 800 | >25 | 23.1 | 3.86 |
+| 1,000 | >25 | >25 | >25 |
 
-**500 km is excluded outright.** At mean solar activity the vehicle deorbits in 0.30
-years; at solar max, 18 days. Minimum altitude for 5-year passive lifetime is 594 km at
-solar min, 690 km at mean, and **833 km at solar max**. A five-year mission spans a
+**500 km is excluded outright.** At mean solar activity the vehicle deorbits in 0.35
+years; at solar max, 26 days. Minimum altitude for 5-year passive lifetime is 584 km at
+solar min, 680 km at mean, and **820 km at solar max**. A five-year mission spans a
 substantial fraction of the solar cycle, so it must be sized against solar max.
 
 Station-keeping drag make-up, worst case, Isp 1500 s:
 
 | $h$ (km) | $\Delta V$/yr (max) | 5-yr $\Delta V$ | Propellant |
 |---:|---:|---:|---:|
-| 500 | 1,373 | 6,865 | 783 kg |
-| 600 | 282 | 1,412 | 192 kg |
-| 700 | 69 | 346 | 49 kg |
-| 800 | 22 | 110 | 16 kg |
-| 1,000 | 5.5 | 28 | 4 kg |
+| 500 | 1,170 | 5,850 | 774 kg |
+| 600 | 241 | 1,203 | 185 kg |
+| 700 | 59 | 295 | 47 kg |
+| 800 | 19 | 94 | 15 kg |
+| 1,000 | 4.7 | 24 | 4 kg |
 
 The knee is sharp: a factor of 16 in propellant between 500 and 700 km.
 
@@ -266,20 +267,30 @@ of the station-keeping case. Decay time at solar min sets the disposal target:
 
 | Drop to | Decay (solar min) |
 |---:|---:|
-| 500 km | 1.19 yr |
-| 550 km | 2.58 yr |
-| 600 km | 5.38 yr |
-| 650 km | 11.6 yr |
+| 500 km | 1.39 yr |
+| 550 km | 3.03 yr |
+| 600 km | 6.31 yr |
+| 650 km | 13.6 yr |
 
 550 km is the disposal target with margin. Disposal cost from each operating altitude:
 
-| $h$ (km) | Drag-assist to 550 km | Controlled, perigee 60 km | EP prop (Isp 1500) | Chem prop (Isp 220) |
-|---:|---:|---:|---:|---:|
-| 700 | 81 m/s | 180 m/s | 12 kg | 168 kg |
-| 800 | 133 | 206 | 19 kg | 191 kg |
-| 1,000 | 235 | 255 | 33 kg | 234 kg |
-| 1,200 | 333 | 302 | 47 kg | 274 kg |
-| 1,500 | 472 | 368 | 66 kg | 329 kg |
+| $h$ (km) | Drag-assist $\Delta V$ | Controlled $\Delta V$ | EP prop (Isp 1500) | % dry | Chem prop (Isp 220) | % dry |
+|---:|---:|---:|---:|---:|---:|---:|
+| 700 | 81 m/s | 180 m/s | 13 kg | 0.6% | 189 kg | 8.0% |
+| 800 | 133 | 206 | 21 kg | 0.9% | 214 kg | 9.1% |
+| 1,000 | 235 | 255 | 37 kg | 1.6% | 263 kg | 11.1% |
+| 1,200 | 333 | 302 | 53 kg | 2.2% | 308 kg | 13.0% |
+| 1,500 | 472 | 368 | 75 kg | 3.2% | 370 kg | 15.7% |
+
+Drag-assist lowers to 550 km and lets drag finish; controlled lowers perigee to 60 km for
+a targeted reentry. Percentages are of the 2,359 kg dry mass of the 40 kW vehicle.
+
+**The disposal mode decides the direction of the altitude trade.** Under drag-assisted
+disposal the cost is under 1% of dry mass anywhere in 700–1,200 km, small enough that it
+only weakly opposes the station-keeping term and leaves the shallow minimum of §7 intact.
+Under controlled reentry it becomes 8–13% of dry mass and rises monotonically with
+altitude, which is larger than the entire station-keeping term and would push the
+selection to the bottom of the band.
 
 ---
 
@@ -289,14 +300,14 @@ Combining station-keeping and disposal over a 5-year mission, electric propulsio
 
 | $h$ (km) | SK $\Delta V$ | Disposal $\Delta V$ | Total | Propellant | % of dry mass |
 |---:|---:|---:|---:|---:|---:|
-| 700 | 346 | 81 | 427 | 60 kg | 2.9% |
-| **800** | **110** | **133** | **244** | **35 kg** | **1.6%** |
-| 1,000 | 28 | 235 | 263 | 37 kg | 1.8% |
-| 1,200 | 13 | 333 | 346 | 49 kg | 2.3% |
+| 700 | 295 | 81 | 376 | 59 kg | 2.5% |
+| **800** | **94** | **133** | **228** | **36 kg** | **1.5%** |
+| 1,000 | 24 | 235 | 259 | 41 kg | 1.7% |
+| 1,200 | 11 | 333 | 344 | 54 kg | 2.3% |
 
 **800 km is the minimum of the propulsion trade.** Station-keeping falls steeply with
 altitude while disposal rises roughly linearly; the two cross near 800 km. The minimum is
-shallow — everything from 700 to 1,200 km sits between 1.6% and 2.9% of dry mass — but it
+shallow — everything from 700 to 1,200 km sits between 1.5% and 2.5% of dry mass — but it
 is a real minimum, and it is the only quantitative discriminator available, since thermal
 is flat to 7.6% and radiation at these altitudes is far inside budget.
 
@@ -309,16 +320,19 @@ Supporting arguments:
   choice within the band.
 - **Thermal is indifferent.** Interpolated FOM at 800 km is ~35.9 kg/kW, against 36.1 at
   700 and 35.4 at 1,000. The spread is 2%.
-- **Drag margin is adequate.** At 800 km the vehicle survives 3.3 years passively even at
+- **Drag margin is adequate.** At 800 km the vehicle survives 3.9 years passively even at
   solar max, so a station-keeping outage is recoverable rather than immediately fatal —
   unlike at 500–600 km, where loss of propulsion means loss of vehicle within months.
 
 ### What 800 km costs
 
-It is **below the 833 km solar-max passive-decay floor**, so station-keeping is mandatory
-rather than optional. The vehicle cannot be flown as a free-flyer. At 110 m/s over five
-years this is a small propellant line, but it is a reliability requirement on the
-propulsion system for the full mission duration.
+It is **just below the 820 km solar-max passive-decay floor**, so station-keeping is
+mandatory rather than optional. The vehicle cannot be flown as a free-flyer. At 94 m/s
+over five years this is a small propellant line, but it is a reliability requirement on
+the propulsion system for the full mission duration. The margin is thin: 20 km, against
+an atmosphere model whose solar-activity treatment is the crudest element of this study.
+A dedicated altitude study (§9) could move this boundary either way, and if it moves up,
+800 km loses its passive-survival argument entirely.
 
 It is also **not a Phase 1 case altitude.** The B-case matrix runs 500 / 700 / 1,000 /
 1,200 / 1,500 / 2,000 km, so 800 km has no radiation counterpart and its dose figure above
@@ -349,13 +363,17 @@ as a bracket.
    below 600 km, shallow minimum, flatness across 700–1,200 — is robust. The 700-versus-800
    km distinction is well inside the error bar.
 5. **$A/m$ is derived from the unsourced mass models of §4** and a guessed array specific
-   area. Orbit lifetime scales linearly with it; a 25% error moves the drag floor by
-   50–100 km.
+   power per unit area (312 W/m²). Orbit lifetime scales linearly with it; a 25% error
+   moves the drag floor by 50–100 km. All §5–§7 figures are now generated from the same
+   `sizing.size_vehicle()` call as §4, so the vehicle is self-consistent across the
+   document — but consistency is not accuracy, and every mass model feeding it remains an
+   assumption.
 6. **Disposal mode unresolved.** Whether drag-assisted disposal satisfies the 1-in-10,000
-   casualty requirement for a 2.1 t (40 kW) to 31 t (600 kW) vehicle has not been
-   assessed. If controlled reentry is required, chemical propellant runs 191 kg at 800 km
-   — 9% of dry mass — and the altitude gradient reverses to favour lower altitudes
-   monotonically. **This could change the selection.**
+   casualty requirement for a 2.4 t (40 kW) to 34.3 t (600 kW) vehicle has not been
+   assessed. If controlled reentry is required, chemical propellant runs 214 kg at 800 km
+   — 9.1% of dry mass — and the altitude gradient reverses to favour lower altitudes
+   monotonically (8.0% at 700 km rising to 13.0% at 1,200 km). **This could change the
+   selection.**
 7. **Anchored to 40 kW.** Area and mass both scale roughly linearly with power, so $A/m$
    should hold to 600 kW, but the radiator-to-array area ratio does shift with power and
    this has not been checked.
@@ -385,7 +403,7 @@ A proper altitude study is tracked as a separate work item and should cover:
   km during 2026 explicitly to reduce collision risk and shorten disposal time. The
   700–1,200 km band is a historically congested region. Object density versus altitude is
   a selection criterion this study has not considered at all.
-- **Coupled optimisation at 600 kW**, where the vehicle is ~31 t with roughly 15× the area
+- **Coupled optimisation at 600 kW**, where the vehicle is ~34 t with roughly 15× the area
   and the drag and disposal numbers may not scale as assumed.
 - **Extension to the sun-synchronous shells**, where the eclipse-free condition above
   ~1,200 km changes the trade entirely and the drag floor is far less binding.
