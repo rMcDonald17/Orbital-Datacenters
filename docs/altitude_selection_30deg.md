@@ -3,7 +3,7 @@
 **Status:** Thermal aside, Part A — deliverable T1
 **Scope:** 30° inclination shells (Phase 1 B-cases) only
 **Decision:** 800 km, carried forward to Parts B–E
-**Code:** [`flux.py`](flux.py), [`fom.py`](fom.py), [`drag.py`](drag.py), [`disposal.py`](disposal.py)
+**Code:** [`THERMPY`](THERMPY)
 
 ---
 
