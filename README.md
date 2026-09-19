@@ -107,7 +107,7 @@ Full derivation, limitations, and validation: **[docs/eclipse_geometry.md](docs/
 
 ## Radiation
 
-Total ionising dose behind 5 mm Al, at the centre of an aluminium sphere, in
+Total ionising dose behind 5 mm Al, at the center of an aluminium sphere, in
 krad(Si)/yr:
 
 | Altitude | SSO (A) | 30° (B) |
@@ -237,7 +237,7 @@ can be published directly where SPENVIS output cannot. Re-running the twelve cas
 through IRENE closes both gaps at once: it quantifies how much conservatism AP-8/AE-8
 carry, and it produces an environment database this repo can actually ship.
 
-**Geant4 transport.** Every dose here is computed at the centre of a solid aluminium
+**Geant4 transport.** Every dose here is computed at the center of a solid aluminium
 sphere — a screening geometry, not a spacecraft. The next step is rebuilding the slab
 problem in Geant4 against the same source spectra, verifying against SHIELDOSE-2, then
 moving to a representative flat-panel bus with electronics behind realistic mass
