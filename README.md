@@ -259,16 +259,10 @@ survey.
 
 ## Acknowledgements
 
-**AI tooling.** Parts of this study were developed with Anthropic's Claude — primarily
-Claude Opus 5, with some work on Claude Fable 5. The models were used for derivation
+**AI tooling.** Parts of this study were developed with Anthropic's Claude — primarily 
+Opus 5, with limited planning using Fable 5 (9/26-Present). The models were used for derivation
 checking, code structuring and refactoring, literature and regulatory lookup, and
 drafting prose from results. Every physical model, numerical result and conclusion in this
-repository was specified, reviewed and verified by the author; the view-factor integrator
-is validated against a closed form, the eclipse model against the SPENVIS orbit generator,
-and all environmental constants and regulatory citations are traced to the primary sources
-listed inline. Errors are the author's.
-
-<!-- Usage split not tracked per session; if you want a percentage here, log it going
-     forward rather than estimating retrospectively. -->
+repository was specified and reviewed by the author; Errors are the author's.
 
 Radiation environment data generated using SPENVIS (www.spenvis.oma.be), an ESA operational software system maintained by the Royal Belgian Institute for Space Aeronomy (BIRA-IASB).
