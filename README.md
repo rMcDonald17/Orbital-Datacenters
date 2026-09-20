@@ -260,7 +260,7 @@ survey.
 ## Acknowledgements
 
 **AI tooling.** Parts of this study were developed with Anthropic's Claude — primarily 
-Opus 5, with limited planning using Fable 5 (9/26-Present). The models were used for derivation
+Opus 5, with limited Fable 5 use (9/26-Present). The models were used for derivation
 checking, code structuring and refactoring, literature and regulatory lookup, and
 drafting prose from results. Every physical model, numerical result and conclusion in this
 repository was specified and reviewed by the author; Errors are the author's.
