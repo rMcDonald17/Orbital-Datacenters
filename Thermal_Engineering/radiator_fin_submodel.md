@@ -2,7 +2,7 @@
 
 **Status:** Thermal aside, Part C Layer 3 — deliverable T3
 **Scope:** 30° shell, 800 km, zenith/deployed radiator panels
-**Code:** [`run_radiator_fin_submodel.py`](../THERMPY/run_radiator_fin_submodel.py) — regenerates every table below, using [`conduction.py`](../THERMPY/conduction.py) and [`environment.py`](../THERMPY/environment.py)
+**Code:** [`run_radiator_fin_submodel.py`](/THERMPY/run_radiator_fin_submodel.py) — regenerates every table below
 
 ---
 
@@ -50,13 +50,13 @@ the asymmetric edge-on configuration is treated with a single $q_{\text{abs}}$.
 ![Differential energy balance on a fin slice](figures/fin_energy_balance.svg)
 
 *(a) The fin spans from one embedded heat pipe to the next. The solved domain runs from the
-pipe contact at $x = 0$ to the symmetry plane at $x = L$; everything beyond is the mirror
+pipe contact at $`x = 0`$ to the symmetry plane at $`x = L`$; everything beyond is the mirror
 image. The Dirichlet condition fixes temperature at the pipe contact, the Neumann condition
-sets zero gradient at the symmetry plane, and the sketched profile $T(x)$ shows why — the
+sets zero gradient at the symmetry plane, and the sketched profile $`T(x)`$ shows why — the
 minimum sits at the plane, so the gradient there vanishes by construction.
-(b) A slice of width $dx$ cut from that domain, with each term of the balance mapped to the
+(b) A slice of width $`dx`$ cut from that domain, with each term of the balance mapped to the
 flux it represents. Blue: conduction along the facesheets. Coral: radiation leaving both
-outer surfaces. Amber: environmental flux absorbed on both. Dividing through by $2\,dx$
+outer surfaces. Amber: environmental flux absorbed on both. Dividing through by $`2\,dx`$
 gives the working form.*
 
 This is Fourier conduction with a nonlinear distributed sink. It is the classic fin
