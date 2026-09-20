@@ -220,3 +220,158 @@ def best_orientation(alt_km, t_rad_k=318.0, **kw):
     scores = {f: net_rejection_worst_beta(alt_km, f, t_rad_k, **kw) for f in FACES}
     best = max(scores, key=scores.get)
     return best, scores[best], scores
+
+
+# ------------------------------------------------- radiator panel configurations
+#
+# A panel's absorbed flux depends on how many faces radiate and what each face
+# sees. Part A originally compared orientations per m^2 of RADIATING area and
+# then applied a blanket factor of 2 for double-sidedness -- which credits a
+# body-mounted panel with a second face it does not have. These helpers count
+# faces explicitly.
+#
+# For a two-faced panel the fin equation depends only on the MEAN of the two
+# face loads (see docs/radiator_fin_submodel.md §2), which is what
+# panel_absorbed_flux returns as .mean.
+
+@dataclass
+class Coupling:
+    """
+    Radiative coupling to other spacecraft surfaces.
+
+    ALL ZERO BY DEFAULT -- this is the hook for the view-factor iteration once
+    panel and bus geometry are defined. Until then every surface is treated as
+    an isolated plate seeing only space and Earth.
+
+    A source at temperature t with view factor f delivers f*eps_source*sigma*t^4
+    to the face, absorbed in the IR band at the face's own emittance.
+
+    Reference magnitudes (6 x 6 m parallel plates, array back face at 33 C):
+        separation 3 m  -> f = 0.415   10 m -> f = 0.093
+        separation 6 m  -> f = 0.200   coplanar -> f = 0
+    """
+    f_array: float = 0.0
+    t_array: float = 306.15          # array back face, from its own energy balance
+    f_bus: float = 0.0
+    t_bus: float = 293.15
+    eps_source: float = 0.85
+
+    def incident(self):
+        """W/m^2 arriving at a face from coupled surfaces."""
+        return self.eps_source * SIGMA * (
+            self.f_array * self.t_array ** 4 + self.f_bus * self.t_bus ** 4)
+
+
+# panel configuration -> list of face angles from nadir (one entry per radiating face)
+PANEL_CONFIGS = {
+    'body-zenith':         [180.0],          # single-sided, back is the bus
+    'body-nadir':          [0.0],
+    'deployed-horizontal': [180.0, 0.0],     # one face up, one down
+    'deployed-edge-on':    [90.0, 90.0],     # both faces edge-on to Earth
+}
+
+
+@dataclass
+class PanelFlux:
+    """Result of panel_absorbed_flux."""
+    mean: float                  # W/m^2, mean over faces -- feeds the fin equation
+    per_face: list               # W/m^2 for each face
+    n_faces: int
+    net_per_panel: float         # W/m^2 of PHYSICAL panel, before fin efficiency
+    config: str
+
+
+def panel_absorbed_flux(alt_km, beta_deg, config='deployed-edge-on',
+                        t_rad_k=318.0, optics=None, env_name='nominal',
+                        coupling=None, n_steps=400):
+    """
+    Worst-instant absorbed flux per face for a radiator panel, and the net
+    rejection per m^2 of physical panel.
+
+    Returns a PanelFlux. Use .mean as conduction.Panel(q_abs=...).
+
+    The edge-on configuration is asymmetric by design: at non-zero beta one face
+    takes the solar load and the panel shades the other. That asymmetry is why
+    it beats a single-sided zenith panel -- splitting a solar load across two
+    radiating faces beats avoiding it on one.
+    """
+    optics = optics or dict(OSR_BOL)
+    coupling = coupling or Coupling()
+    case = Case(alt_km, beta_deg, env=env_name, optics=optics, n_steps=n_steps)
+    a_s, eps = optics['alpha_s'], optics['eps_ir']
+
+    u, eclipse, r_hat, v_hat, sun, cos_zenith = trajectory(case)
+    lit = ~eclipse
+    K = np.clip(cos_zenith, 0, None) * lit
+    q_couple = eps * coupling.incident()
+
+    per_face = []
+    for i, theta in enumerate(PANEL_CONFIGS[config]):
+        F = view_factor(theta, alt_km)
+        if theta == 0.0:
+            normal = -r_hat
+        elif theta == 180.0:
+            normal = r_hat
+        else:                                    # edge-on: +/- orbit normal
+            sign = 1.0 if i == 0 else -1.0
+            normal = np.stack([np.zeros_like(u), np.zeros_like(u),
+                               sign * np.ones_like(u)])
+        cos_sun = np.einsum('i...,i->...', normal, sun)
+        q = (a_s * case.q_sol * np.clip(cos_sun, 0, None) * lit
+             + a_s * case.albedo * case.q_sol * F * K
+             + eps * case.q_ir * F
+             + q_couple)
+        per_face.append(float(q.max()))
+
+    n = len(per_face)
+    mean = float(np.mean(per_face))
+    gross = gross_emission(t_rad_k, eps)
+    return PanelFlux(mean=mean, per_face=per_face, n_faces=n,
+                     net_per_panel=n * (gross - mean), config=config)
+
+
+def best_panel_config(alt_km, t_rad_k=318.0, n_beta=28, **kw):
+    """
+    Best panel configuration on a per-PHYSICAL-PANEL-AREA basis, evaluated at
+    the worst beta each configuration faces. Returns (config, net_per_panel, all).
+    """
+    betas = np.linspace(0.0, beta_max(), n_beta)
+    scores = {c: min(panel_absorbed_flux(alt_km, b, c, t_rad_k, **kw).net_per_panel
+                     for b in betas)
+              for c in PANEL_CONFIGS}
+    best = max(scores, key=scores.get)
+    return best, scores[best], scores
+
+
+def view_factor_parallel(a_m, b_m, sep_m):
+    """
+    View factor between two identical, directly opposed parallel rectangles
+    a x b separated by sep (Hottel). Used to turn a boom layout into the
+    f_array of a Coupling -- see Coupling and docs/radiator_fin_submodel.md §7.
+
+    Coplanar or laterally offset surfaces are not this case: their view factor
+    is zero, which is the whole design point.
+    """
+    X, Y = a_m / sep_m, b_m / sep_m
+    t1 = np.log(((1 + X**2) * (1 + Y**2) / (1 + X**2 + Y**2)) ** 0.5)
+    t2 = X * np.sqrt(1 + Y**2) * np.arctan(X / np.sqrt(1 + Y**2))
+    t3 = Y * np.sqrt(1 + X**2) * np.arctan(Y / np.sqrt(1 + X**2))
+    return float(2 / (np.pi * X * Y) * (t1 + t2 + t3 - X * np.arctan(X) - Y * np.arctan(Y)))
+
+
+def array_temperature(alpha_s=0.90, eta_cell=0.28, q_sol=None, eps_front=0.85,
+                      eps_back=0.85, n_faces=2):
+    """
+    Solar array equilibrium temperature, K. Absorbed solar minus electrical
+    output, radiated from both faces:
+
+        (alpha_s - eta_cell) q_sol = (eps_f + eps_b) sigma T^4
+
+    This is where Coupling.t_array comes from. Blocking the back face (n_faces=1)
+    is what makes a back-to-back array/radiator sandwich fail -- see the study
+    notes; the array runs ~58 K hotter and loses ~23% of its output.
+    """
+    q_sol = q_sol if q_sol is not None else ENV['nominal']['q_sol']
+    q_heat = (alpha_s - eta_cell) * q_sol
+    eps_tot = eps_front + eps_back if n_faces == 2 else eps_front
+    return float((q_heat / (eps_tot * SIGMA)) ** 0.25)
