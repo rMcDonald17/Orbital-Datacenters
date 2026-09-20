@@ -232,10 +232,36 @@ Adding $q_{\text{abs}}$ makes the fin substantially warmer — tip rises from 12
 The tip is the clearer signal: at $L = 350$ mm the source holds the fin **41 K warmer**,
 because it cannot fall below the equilibrium temperature. Efficiency still drops.
 
-Efficiency is a ratio, and the source shrinks the denominator faster than it helps the
-numerator. The reference quantity becomes
-$\varepsilon\sigma T_{\text{root}}^4 - q_{\text{abs}} = 493 - 98 = 395$ W/m² instead of
-the full 493, so the same absolute droop is a larger *fractional* loss.
+Write $G(x) = \varepsilon\sigma(T^4 - T_{sp}^4)$ for the gross emission along the fin, with
+$G_{\text{root}} = 493$ W/m². Define the **deficit** $D = G_{\text{root}} - \langle G\rangle$
+— the gross emission lost to droop. Then
+
+$$\eta_{\text{net}} = 1 - \frac{D}{G_{\text{root}} - q_{\text{abs}}}, \qquad \eta_{q=0} = 1 - \frac{D_0}{G_{\text{root}}}$$
+
+Adding the source does two things at once. It **warms the fin**, cutting the deficit. And it
+**shrinks the reference**, from $G_{\text{root}}$ to $G_{\text{root}} - q_{\text{abs}}$,
+which magnifies whatever deficit remains. Efficiency improves only if the first beats the
+second — that is, only if the source cuts the deficit by more than
+$q_{\text{abs}}/G_{\text{root}} = 19.88\%$:
+
+| $L$ (mm) | $mL$ | $D$ at $q = 0$ | $D$ at $q = 98$ | Deficit cut | Break-even | |
+|---:|---:|---:|---:|---:|---:|---|
+| 20 | 0.244 | 9.5 | 7.6 | 19.75% | 19.88% | drops |
+| 60 | 0.731 | 68.5 | 55.5 | 19.00% | 19.88% | drops |
+| **88** | **1.072** | **119.3** | **97.2** | **18.48%** | **19.88%** | **drops** |
+| 180 | 2.193 | 246.6 | 202.8 | 17.76% | 19.88% | drops |
+| 350 | 4.265 | 351.9 | 288.6 | 18.00% | 19.88% | drops |
+
+**It is a near-tie, and it loses narrowly.** At the optimum the source cuts the deficit by
+18.5% where it needs 19.9% — a 1.4-point shortfall, which is why $\eta_{\text{net}}$ falls
+by only 0.6%. The margin never exceeds about two points anywhere in the range, and it
+closes toward zero as $mL \to 0$ (a short fin barely droops, so there is almost no deficit
+for the source to cut, and almost none left to magnify).
+
+The reason the source can't quite keep up: it warms the fin most where the fin is coldest,
+near the tip, and $T^4$ means a kelvin gained at the cold tip buys far less emission than a
+kelvin gained near the root. The deficit it removes is therefore worth less than
+proportional, while the reference shrinks by the full $q_{\text{abs}}$.
 
 ### What the source term does reveal
 
