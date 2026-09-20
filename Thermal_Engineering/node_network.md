@@ -69,7 +69,7 @@ solid blue for linear conduction, heavy teal for advective transport (not a cond
 §3.1), doubled coral for radiation, amber for environmental flux. Symbols only; values are
 in §3.*
 
-Eight diffusion nodes, two boundary.
+Eight diffusion nodes and one boundary.
 
 | # | Node | Contents | $C$ (J/K) | Notes |
 |---|---|---|---:|---|
@@ -81,8 +81,21 @@ Eight diffusion nodes, two boundary.
 | N6 | bus | Structure, MLI-wrapped electronics | 9.0 × 10⁴ | |
 | N7 | array | Solar array | 4.0 × 10⁴ | Radiatively coupled only |
 | N8 | battery | Li-ion pack | 5.0 × 10⁴ | **Narrowest allowable: 0–40 °C** |
-| N9 | space | Boundary, 3 K | ∞ | |
-| N10 | Earth | Boundary, via $F$ and $q_{\text{IR}}$ | ∞ | |
+| N9 | space | Boundary, 3 K | ∞ | Only boundary node |
+
+**Earth is not a node**, which is exact rather than an approximation. A surface written as
+"emit $\sigma\varepsilon T^4$ to everything, absorb $\varepsilon q_{\text{IR}} F$ from
+Earth" expands to the same expression as "emit to space over $(1-F)$, exchange with Earth
+over $F$", because $q_{\text{IR}} = \sigma T_e^4$ *defines* Earth's effective radiating
+temperature (254.3 K for $q_{\text{IR}} = 237$ W/m²). The two agree to $3\times10^{-6}$
+W/m² across the full range, deep cold included. Earth therefore enters only through
+$q_{\text{abs}}$, and adding it as a boundary node would buy nothing.
+
+The sign handles itself. Net rejection crosses zero at **−99.3 °C**, where
+$\sigma T^4 = q_{\text{IR}} F$; below that the panel is net-*absorbing* from Earth and the
+flux form simply returns a negative number. That temperature is the cold-case floor — see
+§5, where the panel reaches −75.4 °C after 35 minutes, heading toward it but still
+net-cooling at 30 W/m².
 
 **N4 is deliberately lumped.** The loop manifold and the heat-pipe evaporator are
 physically distinct with a real interface between them, but splitting them buys nothing
@@ -183,6 +196,12 @@ between them. That captures both regimes without resolving the span.
 ammonia freeze point of −77.7 °C. That is 2.3 K of margin, which is no margin. Working
 fluid selection, loop draining, or panel isolation becomes a design requirement rather
 than an option.
+
+The eclipse ends before equilibrium: the panel is still cooling at 30 W/m² when the sun
+returns, heading toward the −99.3 °C Earth-IR floor of §2. So the freeze point is crossed
+on the way down, not at a steady state — which means eclipse *duration*, not eclipse
+depth, is what sets this margin. At 800 km that duration is ~35 min at every altitude in
+the band (see `altitude_selection_30deg.md` §2.3), so climbing does not help.
 
 **Holding the root at 45 °C draws 678 W per m² of panel.** Across 67 m² that is 45 kW of
 heater power — more than the payload it is protecting. You cannot heat your way through
