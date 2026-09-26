@@ -1,0 +1,14 @@
+# raw SPENVIS output (not redistributable) and derived tables
+SPENVIS/*_cases/
+spenvis_*.txt
+*.parquet
+inventory.csv
+environment/
+
+# third-party install, not your code
+IRENE_V1.58.001.zip
+Irene/
+
+# local/editor
+__pycache__/
+*.code-workspace

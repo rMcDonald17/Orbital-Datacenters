@@ -1,1 +1,10 @@
-
+'*', 6, 0, 2, 0, 2, 2, 3, 0
+'SPENVIS 4.6.10 - 01-Jan-2026 00:00:00'
+'MOD_ABB', -1, 'AP-8'
+'ORB_ALT', 1, 500.0, 'km'
+'Energy', 'MeV', 1, 'Energy'
+'Flux', 'cm!u-2!ns!u-1!n', 1, 'Integral flux'
+0.1, 1.0E+05
+1.0, 2.0E+04
+10.0, 3.0E+02
+'End of File'
