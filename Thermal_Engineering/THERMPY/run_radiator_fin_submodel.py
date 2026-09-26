@@ -1,7 +1,7 @@
 """
 run_radiator_fin_submodel.py
 
-Prints the tables that appear in docs/radiator_fin_submodel.md (thermal aside,
+Prints the tables that appear in Thermal_Engineering/radiator_fin_submodel.md (thermal aside,
 Part C Layer 3, deliverable T3). One driver per document -- the filename is the
 document stem. Output is copied into the doc by hand; the doc is plain markdown.
 Run top to bottom, or cell by cell.
@@ -57,6 +57,7 @@ for L in [0.05, 0.075, 0.10, 0.15, 0.20]:
     p = panel(half_length=L)
     eb, tb = cd.fin_efficiency(p)
     ef, _, ok = cd.fd_fin_newton(p)
+    assert ok, f"Newton FD did not converge at L = {L*1e3:.0f} mm"
     print(f"{L*1e3:8.0f}{eb:11.6f}{ef:11.6f}{(eb-ef)/ef*100:+10.4f}{tb-273.15:9.2f}")
 
 print("\ngrid convergence at L = 100 mm:")

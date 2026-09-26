@@ -337,7 +337,7 @@ costs 2.75× the annual dose at 5 mm, and shield mass is a weak lever there — 
 above it they are roughly twice as dirty, and they are the more TID-constrained of the
 two across most of the range.
 
-Read together with the [eclipse geometry note](docs/eclipse_geometry.md), which finds
+Read together with the [eclipse geometry note](eclipse_geometry.md), which finds
 that the >99%-sunlit premise fails below ~1,200 km **for dawn–dusk sun-synchronous
 orbits**, the two constraints bound the useful band from opposite directions and leave
 roughly **1,200–1,500 km** as the region satisfying both — narrower than the filed

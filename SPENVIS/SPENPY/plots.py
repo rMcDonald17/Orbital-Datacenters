@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.ticker import LogLocator, NullFormatter
 
-FIGDIR = Path("figures")
+FIGDIR = Path(__file__).resolve().parents[2] / "figures"   # SPENPY -> SPENVIS -> repo root
 
 COTS_KRAD = 100.0          # assumed COTS TID tolerance
 LIFE_YEARS = 5.0           # Starlink-like replacement cadence
@@ -414,21 +414,10 @@ def plot_beta_sweep(**kw):
     return pd.concat([plot_beta_sweep_sso(**sso), plot_beta_sweep_low_inc(**low)],
                      ignore_index=True)
 
-def solar_ra_dec(doy, year=2026):
-    """Apparent solar RA and declination, low-precision series (~0.2 deg)."""
-    n = _days_from_j2000(doy, year)
-    L = np.radians((280.460 + 0.9856474 * n) % 360)
-    g = np.radians((357.528 + 0.9856003 * n) % 360)
-    lam = L + np.radians(1.915) * np.sin(g) + np.radians(0.020) * np.sin(2 * g)
-    eps = np.radians(23.439 - 3.56e-7 * n)
-    ra = np.degrees(np.arctan2(np.cos(eps) * np.sin(lam), np.cos(lam))) % 360
-    dec = np.degrees(np.arcsin(np.sin(eps) * np.sin(lam)))
-    return ra, dec
-
 
 def _read_att_beta(path, root):
     """Measured beta from an att file's orbit-frame Sun vector."""
-    from spenvis_io import read_spenvis          # adjust to your layout
+    from spenvis_io import read_spenvis         
     from spenvis_index import parse_path
     b = read_spenvis(path)[0]
     m, d = b.meta, b.data

@@ -1,7 +1,6 @@
 
+"""spenvis_index.py -- parse case, altitude, and step from the SPENVIS directory layout."""
 from spenvis_io import read_spenvis
-
-"""spenvis_index.py"""
 import re
 from pathlib import Path
 import pandas as pd

@@ -2,7 +2,7 @@
 
 **Status:** Thermal aside, Part C Layer 2 — deliverable T2
 **Scope:** 30° shell, 800 km, 40 kW reference payload
-**Code:** [`nodes.py`](../THERMPY/nodes.py)
+**Code:** [`nodes.py`](THERMPY/nodes.py)
 
 ---
 

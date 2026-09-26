@@ -4,7 +4,10 @@ from spenvis_io import read_spenvis
 import pandas as pd
 from pathlib import Path
 
-ROOT = Path(r"C:\Projects\Orbital_Data\SPENVIS")
+try:
+    ROOT = Path(os.environ["SPENVIS_ROOT"])   # raw SPENVIS output, kept outside the repo
+except KeyError:
+    raise SystemExit("Set SPENVIS_ROOT to the folder containing A_cases/ and B_cases/") from None
 rows = []
 for p in sorted(ROOT.rglob("spenvis_*.txt")):
     rel = str(p.relative_to(ROOT))

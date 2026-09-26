@@ -1,6 +1,7 @@
 # raw SPENVIS output (not redistributable) and derived tables
 SPENVIS/*_cases/
 spenvis_*.txt
+!tests/fixtures/spenvis_*.txt
 *.parquet
 inventory.csv
 environment/

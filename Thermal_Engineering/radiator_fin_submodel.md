@@ -2,7 +2,7 @@
 
 **Status:** Thermal aside, Part C Layer 3 — deliverable T3
 **Scope:** 30° shell, 800 km, zenith/deployed radiator panels
-**Code:** [`run_radiator_fin_submodel.py`](/THERMPY/run_radiator_fin_submodel.py) — regenerates every table below
+**Code:** [`run_radiator_fin_submodel.py`](THERMPY/run_radiator_fin_submodel.py) — regenerates every table below
 
 ---
 
@@ -304,15 +304,17 @@ the strip within one conduction length (82 mm) of a pipe *end* is genuinely 2-D,
 
 A 2-D finite-difference solve of a panel strip against the 1-D result:
 
-| Span $L_y$ | 2-D net (W/m²) | 1-D net (W/m²) | Difference |
-|---:|---:|---:|---:|
-| 88 mm | 298.6 | 297.7 | +0.300% |
-| 250 mm | 298.6 | 297.7 | +0.300% |
-| 1,000 mm | 298.6 | 297.7 | +0.300% |
-| 2,900 mm | 298.6 | 297.7 | +0.300% |
+With the heat pipe running to the panel edge, the 2-D problem has an exactly 1-D solution, and the solver reproduces the 1-D result (297.69 vs 297.67 W/m²). The end effect depends entirely on how far the panel extends past the pipe end:
 
-The residual is constant across a 33× range of span — that is a discretization floor, not
-an edge effect. **2-D buys nothing here.**
+| Overhang | Lost pipe length (per end) | Panel penalty (5.8 m) |
+|---:|---:|---:|
+| 25 mm | 3.9 mm | 0.14% |
+| 50 mm | 13.9 mm | 0.48% |
+| 88 mm | 37.7 mm | 1.30% |
+| 150 mm | 88.5 mm | 3.05% |
+
+Below about 50 mm of overhang, 1-D is adequate. Overhang is a geometry input this study has not fixed.
+
 
 Boundary conditions on the 2-D patch: Dirichlet at the heat pipe edge, adiabatic on the
 other three — two by symmetry between adjacent pipes, one at the pipe end.

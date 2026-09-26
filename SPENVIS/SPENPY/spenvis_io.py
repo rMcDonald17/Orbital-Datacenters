@@ -89,7 +89,6 @@ def _expand(groups, meta):
 
 def _read_block(lines, i, path, bidx):
     h = _fields(lines[i])
-    # was:  n_head, _nb, _nm, _na, n_desc, n_col, n_row = (int(float(x)) for x in h[1:8])
     n_head, _nb, _nm, _na, n_desc, n_col, n_row, more = (int(float(x)) for x in h[1:9])
     head = lines[i + 1: i + n_head]
     b = Block(source_file=str(path), block_index=bidx)
@@ -123,7 +122,7 @@ def _read_block(lines, i, path, bidx):
         j += 1
         if n_row > 0 and len(rows) == n_row:
             break
-    b.data = pd.DataFrame(rows, columns=b.columns if len(b.columns) == n_col else None)   # <-- restore
+    b.data = pd.DataFrame(rows, columns=b.columns if len(b.columns) == n_col else None)
     b.n_rows_declared, b.more_blocks = n_row, bool(more)
     if n_row > 0 and len(rows) != n_row:
         raise ValueError(f"{path} block {bidx}: declared {n_row} rows, read {len(rows)}")

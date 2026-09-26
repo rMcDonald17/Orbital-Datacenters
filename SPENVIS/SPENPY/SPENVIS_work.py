@@ -3,8 +3,13 @@
 # %% ---- long table: load from disk if it exists, rebuild only when asked
 from pathlib import Path
 import pandas as pd
+import os
 
-ROOT = Path(r"C:\Projects\Orbital_Data\SPENVIS")
+try:
+    ROOT = Path(os.environ["SPENVIS_ROOT"])   # raw SPENVIS output, kept outside the repo
+except KeyError:
+    raise SystemExit("Set SPENVIS_ROOT to the folder containing A_cases/ and B_cases/") from None
+
 OUT = Path("environment"); OUT.mkdir(exist_ok=True)
 REBUILD = False          # flip to True after touching spenvis_io / adapters
 
@@ -61,5 +66,5 @@ summary = plot_beta_sweep(alts=[500, 700, 1000, 1200, 1500, 2000],
 print(summary.to_string(index=False))
 
 # independent check against SPENVIS orbit output
-val = plot_beta_validation(r"C:\Projects\Orbital_Data\SPENVIS")
+val = plot_beta_validation(ROOT)
 # %%
