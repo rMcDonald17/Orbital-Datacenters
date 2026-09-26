@@ -257,6 +257,22 @@ payload may bind well before TID does. >30 MeV integral proton flux is already t
 as the precursor metric; turning it into an upset rate needs a device cross-section
 survey.
 
+## Reproducing
+
+```
+python -m pip install -r requirements.txt
+python -m pytest
+```
+
+THERMPY and the test suite run from a clean clone. SPENPY needs raw SPENVIS output, which
+isn't redistributable: regenerate it with the inputs in `SPENVIS/settings.md`, then point
+`SPENVIS_ROOT` at the folder containing `A_cases/` and `B_cases/`:
+
+```
+setx SPENVIS_ROOT "C:\path\to\SPENVIS"        # Windows (applies to new terminals)
+export SPENVIS_ROOT=/path/to/SPENVIS          # macOS / Linux
+```
+
 ## Acknowledgements
 
 **AI tooling.** Parts of this study were developed with Anthropic's Claude — primarily 

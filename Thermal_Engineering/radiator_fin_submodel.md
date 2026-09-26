@@ -324,7 +324,7 @@ Where 2-D *would* matter, in descending order of magnitude:
 1. **Partial shadowing** by the bus or opposite panel. Shadow boundaries do not align with
    the fin direction. The fix is a 2-D flux map feeding a set of 1-D fins with local
    $q_{\text{abs}}$, not a 2-D fin.
-2. **Heat pipe axial gradient** (§8) — ~15× larger than the geometric 2-D effect.
+2. Heat pipe axial gradient (§8): roughly 3 to 8 times the end effect at 50 to 88 mm of overhang, and comparable to it at 150 mm.
 3. **Manifold and header regions** — genuinely 2-D, small area, properly a
    spreading-resistance problem.
 
@@ -391,8 +391,7 @@ contribute little. Not yet quantified.
 
 $T_{\text{root}}$ is taken constant along the pipe. Real axially grooved heat pipes hold a
 few kelvin end to end, and considerably more near their capillary or entrainment limits. A
-3 K droop over 5.8 m changes local rejection by roughly 3.8% — **fifteen times the 2-D
-geometric effect of §6**, and larger than every numerical error in this document.
+3 K droop over 5.8 m changes local rejection by roughly 3.8%: three to eight times the 2-D end effect of §6 for 50 to 88 mm of overhang, and larger than every numerical error in this document.
 
 No heat pipe transport model exists in this study. Capillary limit, entrainment limit,
 sonic limit and boiling limit are all unchecked against the transported power. This is the
