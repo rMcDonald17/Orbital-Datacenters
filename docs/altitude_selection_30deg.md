@@ -3,7 +3,7 @@
 **Status:** Thermal aside, Part A — deliverable T1
 **Scope:** 30° inclination shells (Phase 1 B-cases) only
 **Decision:** 800 km, carried forward to Parts B–E
-**Code:** [`THERMPY`](../Thermal_Engineering/THERMPY/run_part_a.py)
+**Code:** [`THERMPY`](../Thermal_Engineering/THERMPY/run_altitude_selection_30deg.py)
 
 ---
 

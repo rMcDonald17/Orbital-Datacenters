@@ -79,7 +79,7 @@ def _save(fig, stem):
     FIGDIR.mkdir(exist_ok=True)
     png = FIGDIR / f"{stem}.png"
     fig.savefig(png, dpi=200)
-    fig.savefig(FIGDIR / f"{stem}.pdf")
+    # fig.savefig(FIGDIR / f"{stem}.pdf")
     print("wrote", png)
     return fig
 
@@ -123,7 +123,7 @@ def plot_tid_vs_altitude(dose, depths=DEPTHS_MM, stem="tid_vs_altitude"):
 
     np.atleast_1d(axes)[0].set_ylabel("TID (krad(Si)/yr)")
     np.atleast_1d(axes)[0].legend(fontsize=8, framealpha=0.9)
-    fig.suptitle("Radiation cost of altitude: TID at centre of Al sphere, "
+    fig.suptitle("Radiation cost of altitude: TID at center of Al sphere, "
                  "AP-8/AE-8 + SAPPHIRE annual fluence", fontsize=12)
     return _save(fig, stem)
 
@@ -164,7 +164,7 @@ def plot_ddd_vs_altitude(long, depths=(2.0, 5.0, 10.0), stem="ddd_vs_altitude"):
     np.atleast_1d(axes)[0].set_ylabel("DDD (MeV g$^{-1}$ yr$^{-1}$)")
     np.atleast_1d(axes)[0].legend(fontsize=7, framealpha=0.9)
     fig.suptitle("Displacement damage dose vs altitude "
-                 "(NIEL, AP-8 MIN, protons only, centre of Al sphere)", fontsize=12)
+                 "(NIEL, AP-8 MIN, protons only, center of Al sphere)", fontsize=12)
     return _save(fig, stem)
 
 # --------------------------------------------- fig 2: dose decomposition
@@ -235,7 +235,7 @@ def plot_dose_decomposition(dose, cases=("A1", "A6"), cycle="min",
     np.atleast_1d(axes)[0].legend(fontsize=8, framealpha=0.9, loc="upper right")
     fig.suptitle(f"Dose-depth decomposition by species (solar {cycle})",
                  fontsize=12)
-    fig.supxlabel("AP-8/AE-8 + SAPPHIRE annual fluence, centre of Al sphere, "
+    fig.supxlabel("AP-8/AE-8 + SAPPHIRE annual fluence, center of Al sphere, "
                   "dose in Si", fontsize=8, color="0.4")
     return _save(fig, f"{stem}_solar{cycle}")
 

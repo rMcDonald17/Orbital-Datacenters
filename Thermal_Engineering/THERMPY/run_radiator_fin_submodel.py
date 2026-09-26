@@ -138,19 +138,19 @@ print("  near the root, so the deficit removed is worth less than proportional")
 # %% ---- dimensionality: does the fin need 2-D?   (doc table, section 6)
 # Heat pipes run the full panel length, so each fin is ~88 mm across and metres
 # long. Only the strip within one conduction length of a pipe END is really 2-D.
-rule("2-D vs 1-D   (doc table, section 6)")
+# ---- 2-D end effect
+rule("2-D END EFFECT   (doc table, section 6)")
 _p2 = panel(half_length=0.088, t_face=TF_FLOOR)
-q1d = cd.net_per_area_1d(_p2)
-Lc = 1.0 / np.sqrt(4 * _p2.eps * cd.SIGMA * T_ROOT ** 3 / (_p2.k * _p2.t_face))
-print(f"{'span (mm)':>11s}{'2-D net':>10s}{'1-D net':>10s}{'diff':>9s}")
-for span in [0.088, 0.25, 1.0, 2.9]:
-    q2d, _ = cd.fd_fin_2d(_p2, span)
-    print(f"{span*1e3:11.0f}{q2d:10.1f}{q1d:10.1f}{(q2d-q1d)/q1d*100:+8.3f}%")
-print(f"\n  conduction length 1/m = {Lc*1e3:.0f} mm")
-print(f"  fin aspect ratio at a 5.8 m panel: {5.8/_p2.half_length:.0f}:1")
-print(f"  area within one conduction length of a pipe end: {2*Lc/5.8*100:.1f}%")
-print("  constant across a 33x range of span -> a discretization floor, not an")
-print("  edge effect. 2-D buys nothing here.")
+PANEL_LEN = 5.8                                     # m, pipe run incl. both ends
+base = cd.fd_fin_2d_end(_p2, 0.0)
+print(f"  pipe to edge: 2-D {base['net_per_area']:.2f} vs 1-D {cd.net_per_area_1d(_p2):.2f} W/m2"
+      f"  (exactly 1-D by construction; checks the solver, not the physics)")
+print(f"\n{'overhang mm':>12s}{'lost pipe mm':>14s}{'overhang eff':>14s}{'panel penalty':>15s}")
+for oh in (0.010, 0.025, 0.050, 0.088, 0.150):
+    r = cd.fd_fin_2d_end(_p2, oh)
+    eff = 1 - r["lost_length_m"] / oh
+    print(f"{oh*1e3:12.0f}{r['lost_length_m']*1e3:14.1f}{eff:14.3f}"
+          f"{2*r['lost_length_m']/PANEL_LEN*100:14.2f}%")
 
 # %% ---- mass optimization
 rule("FIN MASS OPTIMISATION -- minimise kg/kW rejected")

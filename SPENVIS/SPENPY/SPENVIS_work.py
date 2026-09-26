@@ -39,6 +39,7 @@ else:
     print(f"reusing {main} ({len(long):,} rows)"
           + ("   [STALE: SPENVIS files are newer]" if stale else ""))
 
+
 # %%
 
 from plots import load_long, dose_table, plot_tid_vs_altitude, plot_dose_decomposition
@@ -50,7 +51,8 @@ plot_tid_vs_altitude(dose)
 plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle="min")
 plot_dose_decomposition(dose, cases=["A1", "A6", "B1", "B6"], cycle="max")
 
-#  %%
+
+# %%
 
 from plots import plot_beta_sweep, plot_beta_validation
 

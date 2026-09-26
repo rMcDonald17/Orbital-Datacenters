@@ -23,6 +23,8 @@ from dataclasses import dataclass
 
 import numpy as np
 from scipy.integrate import solve_bvp
+import scipy.sparse as sp
+from scipy.sparse.linalg import spsolve
 
 SIGMA = 5.670374419e-8
 T_SPACE = 3.0
@@ -206,38 +208,68 @@ def specific_mass(p: Panel, n_faces=2):
     return p.areal_mass / q * 1e3, q, eta
 
 
-def fd_fin_2d(p: Panel, span_m, nx=50, ny=50, iters=200000, tol=1e-9):
+def _neumann_d2(n, h):
+    """1-D second-difference operator, both ends adiabatic via mirrored ghost node."""
+    main = np.full(n, -2.0)
+    upper = np.ones(n - 1); lower = np.ones(n - 1)
+    upper[0] = 2.0          # ghost T[-1] = T[1]
+    lower[-1] = 2.0         # ghost T[n] = T[n-2]
+    return sp.diags([lower, main, upper], [-1, 0, 1]) / h ** 2
+ 
+ 
+def fd_fin_2d_end(p: Panel, overhang_m, run_m=0.25, h=0.002, max_iter=50):
     """
-    2-D finite-difference solve of the same fin, over a patch L x span_m.
-
-    Heat pipe along the x=0 edge (Dirichlet); the other three edges adiabatic --
-    two by symmetry between pipes, one at the pipe end. Exists to justify the
-    1-D assumption of the main model, not to replace it.
-
-    Returns (net W/m^2 averaged over the patch, tip temperature).
+    2-D fin patch with a heat pipe that ENDS before the panel edge.
+ 
+    x in [0, L] across the fin (pipe at x = 0), y in [0, run_m + overhang_m]
+    along the pipe. T = T_root on x = 0 for y <= run_m only. Everything else
+    adiabatic: x = 0 beyond the pipe end (symmetry line), x = L (between pipes),
+    y = 0 (far from the end; run_m = 0.25 m is ~3 conduction lengths and the
+    result is unchanged at 0.5 m), y = Ly (panel edge). Second-order ghost-node
+    Neumann on all adiabatic edges. Newton with a sparse analytic Jacobian;
+    raises rather than returning an unconverged field.
+ 
+    Returns dict:
+        Q              net W rejected by the patch, per face
+        net_per_y      W/m per face at each y station
+        net_per_area   Q / patch area, W/m2 per face
+        lost_length_m  end deficit as equivalent pipe length:
+                       (q_line * Ly - Q) / q_line, q_line from the piped run
+    With overhang_m = 0 the solution is exactly 1-D and lost_length_m = 0.
     """
-    x = np.linspace(0, p.half_length, nx)
-    y = np.linspace(0, span_m, ny)
-    dx, dy = x[1] - x[0], y[1] - y[0]
+    L, Ly = p.half_length, run_m + overhang_m
+    nx, ny = int(round(L / h)) + 1, int(round(Ly / h)) + 1
+    x, y = np.linspace(0, L, nx), np.linspace(0, Ly, ny)
     c = p.eps * SIGMA / (p.k * p.t_face)
     s = p.q_abs / (p.k * p.t_face)
-    denom = 2 / dx ** 2 + 2 / dy ** 2
-
-    T = np.full((nx, ny), p.t_root - 15.0)
-    for _ in range(iters):
-        lap = ((np.roll(T, 1, 0) + np.roll(T, -1, 0)) / dx ** 2
-               + (np.roll(T, 1, 1) + np.roll(T, -1, 1)) / dy ** 2)
-        Tn = (lap - c * (T ** 4 - T_SPACE ** 4) + s) / denom
-        Tn[0, :] = p.t_root                       # heat pipe
-        Tn[-1, :] = Tn[-2, :]                     # symmetry plane
-        Tn[:, 0], Tn[:, -1] = Tn[:, 1], Tn[:, -2]  # pipe ends
-        if np.max(np.abs(Tn - T)) < tol:
-            T = Tn
+ 
+    A = (sp.kron(_neumann_d2(nx, x[1] - x[0]), sp.identity(ny))
+         + sp.kron(sp.identity(nx), _neumann_d2(ny, y[1] - y[0]))).tocsr()
+    pipe = np.zeros((nx, ny), bool)
+    pipe[0, y <= run_m + 1e-12] = True
+    d = pipe.ravel()
+    keep = sp.diags((~d).astype(float))
+ 
+    T = np.full(nx * ny, p.t_root - 15.0); T[d] = p.t_root
+    for _ in range(max_iter):
+        R = A @ T - c * (T ** 4 - T_SPACE ** 4) + s
+        R[d] = T[d] - p.t_root
+        J = keep @ (A - sp.diags(4 * c * T ** 3)) + sp.diags(d.astype(float))
+        dT = spsolve(J.tocsc(), R)
+        T -= dT
+        if np.max(np.abs(dT)) < 1e-9:
             break
-        T = Tn
-    net = np.trapezoid(np.trapezoid(p.eps * SIGMA * (T ** 4 - T_SPACE ** 4) - p.q_abs,
-                                    y, axis=1), x) / (p.half_length * span_m)
-    return float(net), float(T[-1, ny // 2])
+    else:
+        raise RuntimeError(f"fd_fin_2d_end: Newton did not converge in {max_iter} iterations")
+ 
+    T = T.reshape(nx, ny)
+    net_per_y = np.trapezoid(p.eps * SIGMA * (T ** 4 - T_SPACE ** 4) - p.q_abs, x, axis=0)
+    Q = float(np.trapezoid(net_per_y, y))
+    piped = y <= run_m - 3 * L                     # well upstream of the end
+    q_line = float(net_per_y[piped].mean()) if piped.any() else float(net_per_y[0])
+    return dict(Q=Q, net_per_y=net_per_y, y=y, T=T,
+                net_per_area=Q / (L * Ly),
+                lost_length_m=(q_line * Ly - Q) / q_line)
 
 
 def net_per_area_1d(p: Panel):
